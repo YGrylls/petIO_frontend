@@ -88,7 +88,7 @@
                     .then(function(response){
                         that.alertInfo.title=response.data.message;
                         that.isLoading=false;
-                        if(response.code!=200){
+                        if(response.data.code!==200){
                             that.alertInfo.type="error";
                         }else{
                             that.alertInfo.type="success";
@@ -98,7 +98,12 @@
 
                     }).catch(function (error) {
                     that.isLoading=false;
-                    that.alertInfo.title=error.data.message;
+                    if(error.response){
+                        that.alertInfo.title=error.response.message;
+                    }else{
+                        that.alertInfo.title=error.message;
+                    }
+
                     that.alertInfo.type="error";
                     that.alertInfo.show=true;
 
