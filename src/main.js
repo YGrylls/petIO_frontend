@@ -11,6 +11,20 @@ Vue.use(ElementUI);
 axios.defaults.baseURL="http://localhost:8081/api/";
 Vue.prototype.$http=axios;
 
+var proxy = require('http-proxy-middleware');
+Vue.use(
+    '/api',
+    proxy({
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+        pathRewrite: {
+            '^/api': ''
+        }
+    })
+);
+
+
+
 new Vue({
   router,
   store,

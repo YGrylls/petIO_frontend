@@ -21,7 +21,7 @@
                                 <el-button plain class="buttonLg" @click="startSignup">注册  <i class="el-icon-edit"></i></el-button>
                             </el-button-group>
                         </el-form>
-                        <el-alert class="alertInfo" v-if="alertInfo.show" :title="alertInfo.title" :type="alertInfo.type" show-icon close-text="晓得了" @close="closeAlert"></el-alert>
+                        <el-alert class="alertInfo" v-if="alertInfo.show" :title="alertInfo.title" :type="alertInfo.type" show-icon close-text="朕已阅" @close="closeAlert"></el-alert>
                     </el-card>
                 </el-col>
             </el-row>
@@ -86,15 +86,22 @@
                 that.isLoading=true;
                 this.$http.post('/login',this.loginForm)
                     .then(function(response){
-                        that.alertInfo.title=response.toString();
-                        that.alertInfo.type="success";
-                        that.alertInfo.show=true;
+                        that.alertInfo.title=response.data.message;
                         that.isLoading=false;
+                        if(response.code!=200){
+                            that.alertInfo.type="error";
+                        }else{
+                            that.alertInfo.type="success";
+                        }
+
+                        that.alertInfo.show=true;
+
                     }).catch(function (error) {
-                    that.alertInfo.title=error.toString();
+                    that.isLoading=false;
+                    that.alertInfo.title=error.data.message;
                     that.alertInfo.type="error";
                     that.alertInfo.show=true;
-                    that.isLoading=false;
+
                 })
             },
             closeAlert:function () {
@@ -122,7 +129,7 @@
     #frontContainer{
         position: absolute;
         z-index: 100;
-        top:0%;
+        top:0;
         right:0;
         left:0;
         bottom: 0;
