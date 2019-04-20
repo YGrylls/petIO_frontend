@@ -25,6 +25,22 @@
     export default {
         name: "signup-box",
         data(){
+            var validatePhone=(rule,value,callback)=>{
+                var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
+                if(!reg.test(value)){
+                    callback(new Error('手机号格式有误'));
+                }else{
+                    callback();
+                }
+            };
+            var doubleCheck=(rule,value,callback)=>{
+                if(value!==this.signUpForm.password){
+                    callback(new Error('密码输入不一致'));
+                }else{
+                    callback();
+                }
+
+            };
             return{
                 signUpVisible:false,
                 signUpForm:{
@@ -41,6 +57,8 @@
                 },
                 isLoading:false,
 
+
+
                 rule:{
                     username:[
                         {required:true,message:"请输入用户名",trigger:"blur"},
@@ -52,16 +70,21 @@
                     ],
                     passwordConfirm:[
                         {required:true, message:"请再次输入密码",trigger:"blur"},
-                        {min:8,max:16,message:"密码长度在8到16字符",trigger:"blur"}
+                        {validator: doubleCheck,trigger:"blur"},
                     ],
                     phoneNumber:[
                         {required:true, message:"请输入手机号码",trigger:"blur"},
+                        {validator: validatePhone,trigger:"blur"}
 
                     ]
                 }
             }
         },
         methods:{
+            closeAlert:function () {
+                this.alertInfo.show=false;
+            },
+
             submitSignup:function () {
                 this.$refs["suForm"].validate((valid) => {
                     if(valid){
@@ -74,21 +97,30 @@
             submitForm: function(){
                 const that=this;
                 that.isLoading=true;
-                this.$http.post('/signup',this.signUpForm)
+                this.$http.post('/signup',{
+                    username:this.signUpForm.username,
+                    password:this.signUpForm.password,
+                    userTel:this.signUpForm.phoneNumber
+                })
                     .then(function(response){
                         that.alertInfo.title=response.data.message;
                         that.isLoading=false;
-                        if(response.code!=200){
+                        if(response.data.code!==200){
                             that.alertInfo.type="error";
                         }else{
                             that.alertInfo.type="success";
+                            that.$refs["suForm"].resetFields();
                         }
 
                         that.alertInfo.show=true;
 
                     }).catch(function (error) {
                     that.isLoading=false;
-                    that.alertInfo.title=error.data.message;
+                    if(error.response){
+                        that.alertInfo.title=error.response.message;
+                    }else{
+                        that.alertInfo.title=error.message;
+                    }
                     that.alertInfo.type="error";
                     that.alertInfo.show=true;
 
@@ -123,6 +155,9 @@
         padding-bottom: 0.3em;
     }
     #signupSubmitBtn{
+        margin-top: 1em;
+    }
+    .alertInfo{
         margin-top: 1em;
     }
 
