@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/login-page.vue'
-import nav from '@/components/nav-menu.vue'
+import AdoptionDetail from '@/components/adoption-detail.vue'
 
 Vue.use(Router)
 
@@ -17,9 +17,9 @@ export default new Router({
           component:Login
       },
       {
-          path:'/nav',
+          path:'/adoption/detail',
           name:'nav',
-          component: nav
+          component: AdoptionDetail
       }
 
 

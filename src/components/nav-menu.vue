@@ -8,12 +8,15 @@
         <el-menu-item index="2">领养</el-menu-item>
         <el-menu-item index="3">送养</el-menu-item>
         <el-menu-item index="4">关于我们</el-menu-item>
+        <el-menu-item>
+            <el-input id="search" placeholder="搜索" suffix-icon="el-icon-search"></el-input>
+        </el-menu-item>
     </el-menu>
 </template>
 
 <script>
     export default {
-        name: "adoption-detail",
+        name: "nav-menu",
         data(){
             return{
                 activeIndex1:'1'
@@ -24,4 +27,7 @@
 
 <style scoped>
 
+    #search{
+        text-align: right;
+    }
 </style>
