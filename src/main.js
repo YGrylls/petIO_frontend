@@ -9,6 +9,7 @@ import axios from 'axios'
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 axios.defaults.baseURL="http://localhost:8081/api/";
+axios.defaults.withCredentials=true;
 Vue.prototype.$http=axios;
 
 var proxy = require('http-proxy-middleware');
