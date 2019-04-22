@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/login-page.vue'
+import Adoption from '@/components/adoption-page.vue'
 import AdoptionDetail from '@/components/adoption-detail.vue'
+import AdoptionList from '@/components/adoption-list.vue'
 
 Vue.use(Router)
 
@@ -9,7 +11,7 @@ export default new Router({
   routes: [
       {
         path:'/',
-          redirect:'/login'
+          redirect:'/adoption/list'
       },
       {
         path:'/login',
@@ -17,9 +19,21 @@ export default new Router({
           component:Login
       },
       {
-          path:'/adoption/detail',
-          name:'nav',
-          component: AdoptionDetail
+          path:'/adoption',
+          name:'adoption',
+          component: Adoption,
+          children:[
+              {
+                  path:'list',
+                  name:"adoptionList",
+                  component:AdoptionList
+              },
+              {
+                  path:'detail/:id',
+                  name:"adoptionDetail",
+                  component:AdoptionDetail,
+              }
+          ]
       }
 
 

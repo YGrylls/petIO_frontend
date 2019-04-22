@@ -1,52 +1,50 @@
 <template>
     <div>
-        <nav-menu></nav-menu>
         <el-container>
-                <el-card id="adoption-detail-card">
-                    <el-row>
-                        <el-col :span="16"><h2 class="content">{{adoptionDetailInfo.adoptionTitle}}</h2></el-col>
-                        <el-col :span="4" offset="4">
-                            <el-button type="text" class="button">{{adoptionDetailInfo.adoptionStatus}}</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col align="left"><i class="el-icon-location-outline">{{adoptionDetailInfo.adoptionPosition}}</i></el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="3"><p>类型：<strong>{{adoptionDetailInfo.category}}</strong></p></el-col>
-                        <el-col :span="3"><p>性别：<strong>{{adoptionDetailInfo.gender}}</strong></p></el-col>
-                        <el-col :span="3"><p>免费：<strong>{{adoptionDetailInfo.free}}</strong></p></el-col>
-                        <el-col :span="3"><p>金额：<strong>￥{{adoptionDetailInfo.cost}}</strong></p></el-col>
-                        <el-col :span="4" offset="8"><el-button plain="" type="primary" @click="showContactInfo">联系方式</el-button></el-col>
-                    </el-row>
-                    <hr/>
-                    <strong><p class="content">宠物相册</p></strong>
-                    <img class="adoptionDetailPhoto" src="../assets/loginBG1.jpg"/>
-                    <img class="adoptionDetailPhoto" src="../assets/loginBG2.jpg"/>
-                    <hr/>
-                    <strong><p class="content">宠物简介</p></strong>
-                    <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
-                    <hr/>
-                    <strong><p class="content">领养要求</p></strong>
-                    <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
-                </el-card>
-                <el-card id="adoption-detail-aside">
-                    <el-row>
-                        <el-col :span="8"><p>领养推荐</p></el-col>
-                        <el-col :span="4" offset="12"><el-button type="text">更多</el-button></el-col>
-                    </el-row>
-                </el-card>
+            <el-card id="adoption-detail-card">
+                <el-row>
+                    <el-col :span="16"><h2 class="content">{{adoptionDetailInfo.adoptionTitle}}</h2></el-col>
+                    <el-col :span="4" :offset="4">
+                        <el-button type="text" class="button">{{adoptionDetailInfo.adoptionStatus}}</el-button>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col align="left"><i class="el-icon-location-outline">{{adoptionDetailInfo.adoptionPosition}}</i></el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="3"><p>类型：<strong>{{adoptionDetailInfo.category}}</strong></p></el-col>
+                    <el-col :span="3"><p>性别：<strong>{{adoptionDetailInfo.gender}}</strong></p></el-col>
+                    <el-col :span="3"><p>免费：<strong>{{adoptionDetailInfo.free}}</strong></p></el-col>
+                    <el-col :span="3"><p>金额：<strong>￥{{adoptionDetailInfo.cost}}</strong></p></el-col>
+                    <el-col :span="4" :offset="8"><el-button plain="" type="primary" @click="showContactInfo">联系方式</el-button></el-col>
+                </el-row>
+                <hr/>
+                <strong><p class="content">宠物相册</p></strong>
+                <img class="adoptionDetailPhoto" src="../assets/loginBG1.jpg"/>
+                <img class="adoptionDetailPhoto" src="../assets/loginBG2.jpg"/>
+                <hr/>
+                <strong><p class="content">宠物简介</p></strong>
+                <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
+                <hr/>
+                <strong><p class="content">领养要求</p></strong>
+                <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
+            </el-card>
+            <el-card id="adoption-detail-aside">
+                <el-row>
+                    <el-col :span="8"><p>领养推荐</p></el-col>
+                    <el-col :span="4" :offset="12"><el-button type="text">更多</el-button></el-col>
+                </el-row>
+            </el-card>
         </el-container>
         <apply-box ref="applyBox"></apply-box>
     </div>
 </template>
 
 <script>
-    import NavMenu from './nav-menu';
     import ApplyBox from './apply-box';
     export default {
         name: "adoption-detail",
-        components: {ApplyBox,NavMenu},
+        components: {ApplyBox},
         data(){
             return{
                 adoptionDetailInfo:{
@@ -67,6 +65,7 @@
         },
         methods:{
             showContactInfo:function () {
+                //这里AJAX请求拿到服务器的返回信息后再将信息填充显示
                 this.$refs.applyBox.applyBoxVisible=true;
             }
         }
@@ -84,8 +83,8 @@
         margin-top: 20px;
     }
     #adoption-detail-aside{
-        margin-right: 5%;
-        margin-left: 5%;
+
+        margin-left: 2%;
         width:25%;
         margin-top: 20px;
     }

@@ -120,7 +120,13 @@
     }
 </script>
 
+
 <style scoped>
+    #container{
+        height:100vh;
+        width:100vw;
+
+    }
 
     #loginLabel{
         text-align: left;
