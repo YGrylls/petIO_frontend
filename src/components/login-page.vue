@@ -6,7 +6,7 @@
             <el-row>
                 <el-col id="loginCol" :xs="layout.xs" :sm="layout.sm" :md="layout.md" :lg="layout.lg">
                     <el-card class="loginBox">
-                        <img class="logoPic logoPicXs" src="../assets/petIO.png"/>
+                        <img class="logoPic" src="../assets/petIO.png"/>
                         <h3 id="loginLabel">登陆</h3>
                         <hr/>
                         <el-form ref="lgForm" :rules="rule"  id="form" :model="loginForm">
@@ -40,8 +40,8 @@
             return{
                 isLoading:false,
                 layout:{
-                    xs:{span:14, offset:4},
-                    sm:{span:12, offset:5},
+                    xs:{span:16, offset:3},
+                    sm:{span:14, offset:4},
                     md:{span:9, offset:6},
                     lg:{span:7, offset:12},
                 },
@@ -92,6 +92,7 @@
                             that.alertInfo.type="error";
                         }else{
                             that.alertInfo.type="success";
+                            that.$router.push("/adoption/list");
                         }
 
                         that.alertInfo.show=true;
@@ -130,7 +131,7 @@
 
     #loginLabel{
         text-align: left;
-        padding-left: 1em;
+        padding-left: 0.5em;
         border-left-color: deepskyblue;
         border-left-width: 0.4em;
         border-left-style: solid;
@@ -180,20 +181,12 @@
         margin-top: 1em;
     }
     .logoPic{
-        height:10em;
+        position:absolute;
+        height:7.5em;
         width: auto;
-        position: absolute;
-        top:-3.12em;
-        right: -5em;
+        top:-2.34em;
+        right: -3.75em;
         z-index: 150;
-    }
-    @media (max-width:768px){
-        .logoPicXs{
-            height:7.5em;
-            width: auto;
-            top:-2.34em;
-            right: -3.75em;
-        }
     }
 
 </style>
