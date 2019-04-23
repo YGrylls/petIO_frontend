@@ -16,8 +16,9 @@
             return {
                 applyBoxVisible: false,
                 ContactInfo:{
-                    Name:'张三',
-                    Contact:'12345678900'
+                    Id:'',
+                    Name:'',
+                    Contact:''
                 }
             }
         },
