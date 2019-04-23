@@ -7,7 +7,7 @@
         <el-menu-item index="1">个人中心</el-menu-item>
         <el-menu-item index="2">领养</el-menu-item>
         <el-menu-item index="3">送养</el-menu-item>
-        <el-menu-item index="4">关于我们</el-menu-item>
+        <img id="logoPic" src="../assets/petIO.png"/>
     </el-menu>
 </template>
 
@@ -28,7 +28,12 @@
 </script>
 
 <style scoped>
-
+    #logoPic{
+        height:4em;
+        float:right;
+        margin-top:-0.3em;
+        margin-right:1em;
+    }
     #search{
         text-align: right;
     }
