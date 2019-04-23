@@ -110,6 +110,7 @@
                         }else{
                             that.alertInfo.type="success";
                             that.$refs["suForm"].resetFields();
+                            that.signUpVisible=false;
                         }
 
                         that.alertInfo.show=true;

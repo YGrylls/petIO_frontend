@@ -1,6 +1,6 @@
 <template>
     <el-card ref="itemCard" id="cardContainer">
-        <div id="content">
+        <div @click="viewDetail" id="content">
             <h3>{{adoptionData.aTitle}}</h3>
             <p>{{adoptionData.editor}} 送养的 {{adoptionData.aType}}</p>
             <p><i class="el-icon-location"></i> {{adoptionData.location}}</p>
@@ -24,10 +24,13 @@
                 }
             return dogPic;
             },
+            viewDetail(){
+                this.$router.push("/adoption/detail/"+this.adoptionData.aID);
+            }
         },
         mounted(){
 
-        }
+        },
     }
 </script>
 
@@ -50,5 +53,6 @@
         right:5%;
         bottom: -5%;
         height: 85%;
+        opacity:0.6;
     }
 </style>

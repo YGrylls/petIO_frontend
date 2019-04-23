@@ -92,6 +92,7 @@
                             that.alertInfo.type="error";
                         }else{
                             that.alertInfo.type="success";
+                            that.$router.push("/adoption/list");
                         }
 
                         that.alertInfo.show=true;

@@ -16,7 +16,7 @@
         name: "nav-menu",
         data(){
             return{
-                activeIndex1:'1'
+                activeIndex1:'2'
             }
         },
         methods:{
