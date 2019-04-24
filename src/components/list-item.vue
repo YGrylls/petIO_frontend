@@ -5,7 +5,7 @@
             <p>{{adoptionData.editor}} 送养的 {{adoptionData.aType}}</p>
             <p><i class="el-icon-location"></i> {{adoptionData.location}}</p>
             <p id="pubDate"><i class="el-icon-date"></i> {{adoptionData.publishDate}}</p>
-            <p id="readCount"><i class="el-icon-view"></i> {{adoptionData.aRead}}</p>
+            <!--<p id="readCount"><i class="el-icon-view"></i> {{adoptionData.aRead}}</p>-->
         </div>
         <img id="backgroundType" :src="decideType()"/>
     </el-card>

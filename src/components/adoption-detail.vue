@@ -93,9 +93,10 @@
                 const that=this;
                 this.$http.post(url).then(function (response) {
                     if(response.data.code===200){
-                        that.$refs.applyBox.Id=response.data.data.username;
-                        that.$refs.applyBox.Name=response.data.data.username;
-                        that.$refs.applayBox.Contact=response.data.data.userTel;
+                        that.$refs.applyBox.ContactInfo.Id=response.data.data.username;
+                        that.$refs.applyBox.ContactInfo.Name=response.data.data.username;
+                        that.$refs.applyBox.ContactInfo.Contact=response.data.data.userTel;
+                        that.$refs.applyBox.applyBoxVisible=true;
                     }
                     that.$message(response.data.message);
                     if(response.data.code===401){
@@ -110,7 +111,7 @@
                             type:"warning"});
                     }
                 });
-                this.$refs.applyBox.applyBoxVisible=true;
+
             },
             getData:function () {
                 //这里AJAX请求拿到服务器的返回信息后再将信息填充显示
