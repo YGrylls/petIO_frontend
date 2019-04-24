@@ -88,11 +88,28 @@
         },
         methods:{
             showContactInfo:function () {
-                var ownerId=this.adoptionDetailInfo.aID;
-                var data={
-                    id:ownerId
-                };
-                alert(data.id);
+                let id =parseInt(this.$route.params.id);
+                const url='/adoption/apply/'+id;
+                const that=this;
+                this.$http.post(url).then(function (response) {
+                    if(response.data.code===200){
+                        that.$refs.applyBox.Id=response.data.data.username;
+                        that.$refs.applyBox.Name=response.data.data.username;
+                        that.$refs.applayBox.Contact=response.data.data.userTel;
+                    }
+                    that.$message(response.data.message);
+                    if(response.data.code===401){
+                        that.$router.push("/login");
+                    }
+                }).catch(function (error) {
+                    if(error.response){
+                        that.$message({message:error.response.message,
+                            type:"warning"});
+                    }else{
+                        that.$message({message:error.message,
+                            type:"warning"});
+                    }
+                });
                 this.$refs.applyBox.applyBoxVisible=true;
             },
             getData:function () {
@@ -103,7 +120,7 @@
                 const that=this;
                 this.$http.post(url)
                     .then(function (response) {
-                        if(response.data.code!=200){
+                        if(response.data.code!==200){
                             alert("error");
                         }
                         else {
@@ -116,7 +133,7 @@
                             that.adoptionDetailInfo.free=response.data.data.free;
                             that.adoptionDetailInfo.cost=response.data.data.aMoney;
                             that.adoptionDetailInfo.adoptionDetailAbstract=response.data.data.aText;
-                            // that.adoptionDetailInfo.adoptionDetailRequirement=response.data.data.
+                            that.adoptionDetailInfo.adoptionDetailRequirement=response.data.data.aDetailInfo;
                         }
                     })
                     .catch(function (error) {
