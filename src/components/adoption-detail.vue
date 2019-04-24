@@ -69,15 +69,15 @@
                 },
                 adoptionDetailInfo:{
                     aID:0,
-                    adoptionTitle:'异瞳白猫弟弟-成都宠物领养',
+                    adoptionTitle:'',
                     adoptionStatus:0,
-                    adoptionPosition:'成都/双流文星临江丽苑三期b区',
-                    category:"小猫",
-                    gender:"公",
+                    adoptionPosition:'',
+                    category:"",
+                    gender:"",
                     free: 0,
                     cost:0,
-                    adoptionDetailAbstract:'2018.07 山上救助的流浪狗 流浪没人搭理 自己还是只狗宝宝 就在在垃圾堆生了一娃狗仔子！靠吃垃圾为维持 怕它营养不良暴毙 一大家子8只一起救的 奶狗们都已安稳 只剩可怜兮兮的它自己 它身体非常健康 一直在寄养现已节育 可以送养 希望你们可以给它个家',
-                    adoptionDetailRequirement:'成都本地人'
+                    adoptionDetailAbstract:'',
+                    adoptionDetailRequirement:''
                 },
                 adoptionDetailPhoto:[
                     {id:0,url:require("../assets/loginBG0.jpg")},
