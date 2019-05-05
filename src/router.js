@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/components/login-page.vue'
-import Adoption from '@/components/adoption-page.vue'
-import AdoptionDetail from '@/components/adoption-detail.vue'
-import AdoptionList from '@/components/adoption-list.vue'
+// import Login from '@/components/login-page.vue'
+// import Adoption from '@/components/adoption-page.vue'
+// import AdoptionDetail from '@/components/adoption-detail.vue'
+// import AdoptionList from '@/components/adoption-list.vue'
 
 Vue.use(Router)
 
@@ -15,23 +15,28 @@ export default new Router({
       },
       {
         path:'/login',
-          name:'Login',
-          component:Login
+        name:'Login',
+        component:()=>import('@/components/login-page.vue')
       },
       {
           path:'/adoption',
           name:'adoption',
-          component: Adoption,
+          component:()=>import('@/components/adoption-page.vue'),
           children:[
               {
                   path:'list',
                   name:"adoptionList",
-                  component:AdoptionList
+                  component:()=>import('@/components/adoption-list.vue')
               },
               {
                   path:'detail/:id',
                   name:"adoptionDetail",
-                  component:AdoptionDetail,
+                  component:()=>import('@/components/adoption-detail.vue')
+              },
+              {
+                  path:'publish',
+                  name:'adoptionPublish',
+                  component:()=>import('@/components/adoption-publish.vue')
               }
           ]
       }
