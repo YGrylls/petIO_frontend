@@ -30,7 +30,7 @@
                 </el-row>
                 <hr/>
                 <strong><p class="content">宠物相册</p></strong>
-                <el-carousel :interval="4000" type="card" >
+                <el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >
                     <el-carousel-item v-for="item in adoptionDetailPhoto" :key="item.id">
                         <!--<h3>{{ item.url }}</h3>-->
                         <img class="adoptionDetailPhoto" v-bind:src="item.url" />
@@ -84,6 +84,7 @@
                     {id:1,url:require("../assets/loginBG1.jpg")},
                     {id:2,url:require("../assets/loginBG2.jpg")}
                 ],
+                imgType:"card"
             }
         },
         methods:{
@@ -143,6 +144,21 @@
                 
             }
         },
+        mounted(){
+            const that=this;
+            window.onresize=()=>{
+                return(()=>{
+                    window.screenWidth=document.body.clientWidth;
+                    that.screenWidth=window.screenWidth;
+                    if(that.screenWidth<1000){
+                        that.imgType="";
+                    }
+                    else {
+                        that.imgType="card";
+                    }
+                })()
+            }
+        }
     }
 </script>
 
@@ -163,8 +179,8 @@
         margin-top: 20px;
     }
     .adoptionDetailPhoto{
-        width: auto;
-        height: 100%;
+        width: 100%;
+        height: auto;
         display: block;
     }
     .AdoptionBtn{
