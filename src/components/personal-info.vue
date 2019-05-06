@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <div id="container">
         <el-card id="showInfo">
             <h1>{{personalForm.name}}</h1>
             <hr>
@@ -46,7 +46,7 @@
                 </el-tab-pane>
             </el-tabs>
         </el-card>
-    </el-container>
+    </div>
 </template>
 
 <script>
@@ -165,6 +165,7 @@
                     .then(function (response) {
                         if(response.data.code!=200){
                             alert("error");
+                            //that.$router.push("/login");
                         }
                         else {
                             that.personalForm.name=response.data.data.username;
@@ -212,16 +213,24 @@
 </script>
 
 <style scoped>
+    #container{
+        display: flex;
+        flex-wrap: wrap;
+        padding-left:5%;
+        padding-right: 5%;
+        align-items: flex-start;
+    }
     #showInfo{
-        margin-left: 5%;
-        width:20%;
-        margin-top: 20px;
+        margin: 1.5%;
+        width: 200px;
+        flex-grow: 1;
+
     }
     #modifyInfo{
-        margin-left: 1%;
+        margin:1.5%;
         padding-right: 5%;
-        width: 60%;
-        margin-top: 20px;
+        width:360px;
+        flex-grow: 1;
     }
     .tag{
         text-align: left;
