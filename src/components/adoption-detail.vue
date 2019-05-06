@@ -16,7 +16,7 @@
                     <el-col :span="3"><p>类型：<strong>{{adoptionDetailInfo.category}}</strong></p></el-col>
                     <el-col :span="3">
                         <p v-if="adoptionDetailInfo.gender==0">性别：<strong>公</strong></p>
-                        <p v-else>性别：<strong>公</strong></p>
+                        <p v-else>性别：<strong>母</strong></p>
                     </el-col>
                     <el-col :span="3">
                         <p v-if="adoptionDetailInfo.free==true">免费：<strong>是</strong></p>

@@ -124,7 +124,6 @@
                     }
                     that.alertInfo.type="error";
                     that.alertInfo.show=true;
-
                 })
             }
         }

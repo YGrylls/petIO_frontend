@@ -37,6 +37,11 @@ export default new Router({
                   path:'publish',
                   name:'adoptionPublish',
                   component:()=>import('@/components/adoption-publish.vue')
+              },
+              {
+                  path:'personal',
+                  name:'personalInfo',
+                  component:()=>import('@/components/personal-info.vue')
               }
           ]
       }
