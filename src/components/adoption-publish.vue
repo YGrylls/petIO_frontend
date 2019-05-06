@@ -184,7 +184,7 @@
                         that.isLoading=false;
                             if(response.data.code===200){
                             that.$message("发布成功");
-                            that.$router.push("/adoption/detail/"+response.data.data.id);//跳转
+                            that.$router.push("/adoption/detail/"+response.data.data);//跳转
                             }else{
                                 that.$message({
                                     type:"warning",
