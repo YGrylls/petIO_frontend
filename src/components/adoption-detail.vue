@@ -9,14 +9,17 @@
                         <el-button type="text" v-else class="AdoptionBtn">未领养</el-button>
                     </el-col>
                 </el-row>
-                <el-row>
+                <el-row id="locate">
                     <el-col align="left"><i class="el-icon-location-outline">{{adoptionDetailInfo.adoptionPosition}}</i></el-col>
+                </el-row>
+                <el-row>
+                    <el-col align="left"><i class="el-icon-time">{{adoptionDetailInfo.publishDate}}</i></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="3"><p>类型：<strong>{{adoptionDetailInfo.category}}</strong></p></el-col>
                     <el-col :span="3">
-                        <p v-if="adoptionDetailInfo.gender==0">性别：<strong>公</strong></p>
-                        <p v-else>性别：<strong>母</strong></p>
+                        <p v-if="adoptionDetailInfo.gender=='female'">性别：<strong>母</strong></p>
+                        <p v-else>性别：<strong>公</strong></p>
                     </el-col>
                     <el-col :span="3">
                         <p v-if="adoptionDetailInfo.free==true">免费：<strong>是</strong></p>
@@ -77,7 +80,8 @@
                     free: 0,
                     cost:0,
                     adoptionDetailAbstract:'',
-                    adoptionDetailRequirement:''
+                    adoptionDetailRequirement:'',
+                    publishDate:'',
                 },
                 adoptionDetailPhoto:[
                     {id:0,url:require("../assets/loginBG0.jpg")},
@@ -126,6 +130,7 @@
                             alert("error");
                         }
                         else {
+                            console.log(response.data.data)
                             that.adoptionDetailInfo.aID=response.data.data.aID;
                             that.adoptionDetailInfo.adoptionTitle=response.data.data.aTitle;
                             that.adoptionDetailInfo.adoptionStatus=response.data.data.aState;
@@ -136,6 +141,7 @@
                             that.adoptionDetailInfo.cost=response.data.data.aMoney;
                             that.adoptionDetailInfo.adoptionDetailAbstract=response.data.data.aText;
                             that.adoptionDetailInfo.adoptionDetailRequirement=response.data.data.aDetailInfo;
+                            that.adoptionDetailInfo.publishDate=response.data.data.publishDate;
                         }
                     })
                     .catch(function (error) {
@@ -150,7 +156,7 @@
                 return(()=>{
                     window.screenWidth=document.body.clientWidth;
                     that.screenWidth=window.screenWidth;
-                    if(that.screenWidth<1000){
+                    if(that.screenWidth<800){
                         that.imgType="";
                     }
                     else {
@@ -185,5 +191,8 @@
     }
     .AdoptionBtn{
         text-align: right;
+    }
+    #locate{
+        margin-bottom: 2px;
     }
 </style>
