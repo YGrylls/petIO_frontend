@@ -14,7 +14,7 @@
                             accept="image/jpg,image/jpeg,image/png"
                             list-type="picture-card"
                             :limit="5"
-                            :file-list="publishFormData.imgUrl"
+                            :file-list="publishFormData.imgUrls"
                             :on-preview="handlePictureCardPreview"
                             :on-remove="handleRemove"
                             :on-success="handleSuccess"
@@ -94,7 +94,7 @@
             return{
                 publishFormData:{
                     title:"",
-                    imgUrl:[],  //格式 [{'name':'xxx','url':'http"//xxxxxxxx.jpg'}]
+                    imgUrls:[],  //格式 [{'name':'xxx','url':'http"//xxxxxxxx.jpg'}]
                     location:"嘉定",
                     sex:"female",
                     type:"狗",
@@ -114,10 +114,9 @@
                         {required:true, message:"请输入"},
                         {max:40,min:10, message:"标题长度应在10到40字符"}
                     ],
-                    imgUrl:[
-
-                        {max:5,min:1, message:"宠物相片至少1张，至多5张"}
-                    ],
+                    // imgUrls:[
+                    //     {max:5,min:1, message:"宠物相片至少1张，至多5张"}
+                    // ],
                     location:[
                         {required:true, message:"请选择"},
                     ],
@@ -164,8 +163,23 @@
                 //先调用验证
                 //再AXIOS发送表单
                 //response回显
+                var imgUrlList=[];
+                for (let item of this.publishFormData.imgUrls){
+                    imgUrlList.push(item);
+                }
                 that.isLoading=true;
-                this.$http.post('/new',this.publishFormData)
+                this.$http.post('/new',{
+                    title:this.publishFormData.title,
+                    sex:this.publishFormData.sex,
+                    imgUrl:imgUrlList,
+                    communication:this.publishFormData.communication,
+                    communicationType:this.publishFormData.communicationType,
+                    cost:this.publishFormData.cost,
+                    detail:this.publishFormData.detail,
+                    requirements:this.publishFormData.requirements,
+                    type:this.publishFormData.type,
+                    location:this.publishFormData.location
+                })
                     .then(function (response) {
                         that.isLoading=false;
                             if(response.data.code===200){
