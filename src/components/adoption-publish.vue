@@ -6,13 +6,14 @@
         <el-card id="publishCard">
             <el-form ref="publishForm" :model="publishFormData" :rules="rule" label-position="top">
                 <el-form-item  label="发布标题" prop="title">
-                    <el-input v-model="publishFormData.title" placeholder="标题应当简明地描述您欲送养的宠物特点或要求"></el-input>
+                    <el-input maxlength="40" v-model="publishFormData.title" placeholder="标题应当简明地描述您欲送养的宠物特点或要求"></el-input>
                 </el-form-item>
                 <el-form-item label="为您欲送养的宠物上传照片（至少一张）" prop="imgUrl">
                     <el-upload
                             action="http://localhost:8081/api/upload"
                             accept="image/jpg,image/jpeg,image/png"
                             list-type="picture-card"
+                            :limit="5"
                             :file-list="publishFormData.imgUrl"
                             :on-preview="handlePictureCardPreview"
                             :on-remove="handleRemove"
@@ -46,7 +47,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="领养是否收费（0即免费）" prop="cost">
-                    <el-input v-model.number="publishFormData.cost" style="width: 15em">
+                    <el-input maxlength="8" v-model.number="publishFormData.cost" style="width: 15em">
                     </el-input>
                 </el-form-item>
 
@@ -55,9 +56,18 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="描述您对领养的要求" prop="requirements">
-                    <el-input v-model="publishFormData.requirements" type="textarea" :autosize="{minRows: 4}" placeholder="要求考虑包含领养者素质、回访要求等">
+                    <el-input v-model="publishFormData.requirements" type="textarea" :autosize="{minRows: 4}" placeholder="要求考虑包含领养者素质、回访要求等，无要求请注明">
 
                     </el-input>
+                </el-form-item>
+                <el-form-item class="communicationSelect" label="留下您的联系方式" prop="communicationType">
+                    <el-select v-model="publishFormData.communicationType">
+                        <el-option value="微信"/>
+                        <el-option value="电话"/>
+                    </el-select>
+                </el-form-item>
+                <el-form-item class="communicationSelect" prop="communication">
+                    <el-input maxlength="24" style="width: 24em" v-model="publishFormData.communication" placeholder="请留下真实可用的联系方式"></el-input>
                 </el-form-item>
                 <div>
                     <small id="notification">※ 您的送养发布信息将保持30天，您可以在发布到期前三天开始对发布续期</small>
@@ -82,13 +92,48 @@
                     type:"狗",
                     cost:0,
                     detail:"",
-                    requirements:""
+                    requirements:"",
+                    communicationType:"微信",
+                    communication:""
                 },
                 isLoading:false,
                 dialogVisible:false,
                 dialogImageUrl:"",
                 rule:{
                     //验证
+                    title:[
+                        {required:true, message:"请输入"},
+                        {max:40,min:10, message:"标题长度应在10到40字符"}
+                    ],
+                    imgUrl:[
+
+                        {max:5,min:1, message:"宠物相片至少1张，至多5张"}
+                    ],
+                    location:[
+                        {required:true, message:"请选择"},
+                    ],
+                    type:[
+                        {required:true, message:"请选择"},
+                    ],
+                    cost:[
+                        {required:true, message:"请输入"},
+                        {type:"number", message:"必须是数字"}
+                    ],
+                    detail:[
+                        {required:true, message:"请输入"},
+                        {max:800,min:15, message:"详情内容应在15到800字符"}
+                    ],
+                    requirements:[
+                        {required:true, message:"请输入"},
+                        {max:800,min:1, message:"要求描述应在1到800字符"}
+                    ],
+                    communicationType:[
+                        {required:true, message:"请选择"},
+                    ],
+                    communication:[
+                        {required:true, message:"请输入"},
+                        {max:24,min:6, message:"微信号或电话号码应在6到24字符"}
+                    ],
                 }
             }
         },
@@ -110,10 +155,22 @@
                 that.isLoading=true;
                 this.$http.post('/publish',this.publishFormData)
                     .then(function (response) {
-                        console.log(response);
                         that.isLoading=false;
+                            if(response.data.code===200){
+                            that.$message("发布成功");
+                            that.$router.push("/adoption/detail/"+response.data.data.id);//跳转
+                            }else{
+                                that.$message({
+                                    type:"warning",
+                                    message:response.data.message
+                                })
+                            }
+
                     }).catch(function (error) {
-                        console.log(error);
+                        that.$message({
+                            type:"warning",
+                            message:error.message
+                        });
                         that.isLoading=false;
                     })
             },
@@ -150,5 +207,9 @@
         float: right;
         color: orange;
         margin:0.5em 0 1em 0
+    }
+    .communicationSelect{
+        display: inline-block;
+        margin-right: 1em;
     }
 </style>
