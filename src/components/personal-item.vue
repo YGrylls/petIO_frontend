@@ -30,12 +30,10 @@
         position: relative;
         text-align: left;
         padding: 0 1.5em 0 1.5em;
-        margin-bottom: 1.5em;
-        margin-left:1em;
-        margin-right:1em;
+        margin: 1.6em;
     }
     #personalItem:hover{
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
     #adoptionImg{
         position: absolute;

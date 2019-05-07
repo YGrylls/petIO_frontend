@@ -12,9 +12,12 @@
                     <el-upload
                             action="http://localhost:8081/api/upload"
                             accept="image/jpg,image/jpeg,image/png"
+                            name="imgInput"
                             list-type="picture-card"
                             :limit="5"
+                            :with-credentials="true"
                             :on-remove="handleRemove"
+                            :on-preview="handlePictureCardPreview"
                             :on-success="handleSuccess"
                             :on-error="handleUploadError">
                         <i class="el-icon-plus"></i>
@@ -92,7 +95,7 @@
             return{
                 publishFormData:{
                     title:"",
-                    imgUrls:[],  //格式 [{'name':'xxx','url':'http"//xxxxxxxx.jpg'}]
+                    imgUrl:[],
                     location:"嘉定",
                     sex:"female",
                     type:"狗",
@@ -161,23 +164,9 @@
                 //先调用验证
                 //再AXIOS发送表单
                 //response回显
-                var imgUrlList=[];
-                for (let item of this.publishFormData.imgUrls){
-                    imgUrlList.push(item);
-                }
+
                 that.isLoading=true;
-                this.$http.post('/new',{
-                    title:this.publishFormData.title,
-                    sex:this.publishFormData.sex,
-                    imgUrl:imgUrlList,
-                    communication:this.publishFormData.communication,
-                    communicationType:this.publishFormData.communicationType,
-                    cost:this.publishFormData.cost,
-                    detail:this.publishFormData.detail,
-                    requirements:this.publishFormData.requirements,
-                    type:this.publishFormData.type,
-                    location:this.publishFormData.location
-                })
+                this.$http.post('/new',this.publishFormData)
                     .then(function (response) {
                         that.isLoading=false;
                             if(response.data.code===200){
@@ -205,8 +194,19 @@
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
-            handleSuccess(){
-                this.$message("上传成功");
+            handleSuccess(res){
+                console.log(res);
+                if(res.code===200){
+                    this.$message("上传成功");
+                    this.publishFormData.imgUrl.push(res.data);
+                    console.log(this.publishFormData.imgUrl);
+                }
+                else{
+                    this.$message({
+                        type:"error",
+                        message:"上传失败"
+                    })
+                }
             },
             handleUploadError(){
                 this.$message({

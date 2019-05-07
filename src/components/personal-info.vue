@@ -163,9 +163,12 @@
                 const that=this;
                 this.$http.get("/userinfo/info")
                     .then(function (response) {
-                        if(response.data.code!=200){
-                            alert("error");
-                            //that.$router.push("/login");
+                        if(response.data.code!==200){
+                            that.$message({
+                                type:"warning",
+                                message:response.data.message
+                            });
+                            that.$router.push("/login");
                         }
                         else {
                             that.personalForm.name=response.data.data.username;
