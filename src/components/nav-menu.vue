@@ -16,10 +16,25 @@
         name: "nav-menu",
         data(){
             return{
-                activeIndex1:'2'
+                activeIndex1:''
             }
         },
+        created(){
+            this.activeIndex1=this.getIndex();
+        },
         methods:{
+            getIndex(){
+                if(this.$route.path=="/adoption/personal"){
+                    return "1";
+                }
+                else if(this.$route.path=="/adoption/list"){
+                    return "2";
+                }
+                else if(this.$route.path=="/adoption/publish"){
+                    return "3";
+                }
+                return "2";
+            },
             handleSelect(){
                 //TO BE DONE
             },
