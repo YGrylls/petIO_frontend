@@ -78,7 +78,7 @@
                     <el-input maxlength="24" style="width: 24em" v-model="publishFormData.communication" placeholder="请留下真实可用的联系方式"></el-input>
                 </el-form-item>
                 <div>
-                    <small id="notification">※ 您的送养发布信息将保持30天，您可以在发布到期前三天开始对发布续期</small>
+                    <small id="notification">※ 您的送养发布信息将保持15天，您可以在发布到期前三天开始对发布续期</small>
                     <el-button type="primary" :loading="isLoading"  @click="submitClick">确认并提交送养发布信息</el-button>
                 </div>
 
