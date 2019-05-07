@@ -11,20 +11,21 @@
                 <el-tab-pane label="个人信息" name="first">
                     <hr/>
                     <h3 class="tag">个人信息修改</h3>
-                    <el-form ref="personalForm" :model="personalForm" label-width="80px">
+                    <el-form ref="personalForm" :model="personalForm" :rules="personalFormRule" label-width="80px">
                         <el-form-item label="昵称">
                             <el-input :disabled="true" v-model="personalForm.name"></el-input>
                         </el-form-item>
-                        <el-form-item label="手机">
+                        <el-form-item label="手机" prop="phoneNumber">
                             <el-input v-model="personalForm.phone"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="personalFormSubmit">确认修改</el-button>
+                            <el-button size="mini" type="primary" @click="personalFormSubmit">确认修改</el-button>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="送养信息" name="second">
-                    <personal-item v-if="publishmentList!=[]" v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
+                    <personal-item v-on:listenToChildEvent="refresh" v-if="publishmentList!=[]" v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
+
                 </el-tab-pane>
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
@@ -40,7 +41,7 @@
                             <el-input :minlength="8" :maxlength="16" v-model="modifyForm.confirmPassword" show-password placeholder="请确认新密码"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="modifyFormSubmit">确认修改</el-button>
+                            <el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
@@ -85,6 +86,15 @@
                     callback();
                 }
             };
+            var validatePhone=(rule,value,callback)=>{
+                var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
+                var phone=this.personalForm.phone;
+                if(!reg.test(phone)){
+                    callback(new Error('手机号格式有误'));
+                }else{
+                    callback();
+                }
+            };
             return{
                 activeName:'first',
                 personalForm: {
@@ -115,13 +125,55 @@
                         {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
                         {validator:secondCheck,trigger:"blur"}
                     ]
+                },
+                personalFormRule:{
+                    phoneNumber:[
+                        // {required:true, message:"请输入手机号码",trigger:"blur"},
+                        {validator: validatePhone,trigger:"blur"}
+                    ]
                 }
 
             }
         },
         methods:{
+            refresh:function(){
+                this.showUser();
+                this.getPublishment();
+            },
             personalFormSubmit:function ()  {
-                alert('personalFormSubmit!');
+                this.$refs["personalForm"].validate((valid)=>{
+                    if(valid){
+                        this.modifyPersonalInfo();
+                    }
+                    else {
+                        return false;
+                    }
+                })
+            },
+            modifyPersonalInfo:function(){
+                const that=this;
+                this.$http.post("/userinfo/changePhone",{
+                    username:that.personalForm.name,
+                    userTel:that.personalForm.phone
+                })
+                    .then(function (response) {
+                        if(response.data.code==200){
+                            alert("修改成功！");
+                            that.showUser();
+                            that.getPublishment();
+                        }
+                        else {
+                            alert("error");
+                        }
+                    })
+                    .catch(function (error) {
+                        if(error.response){
+                            alert(error.response.message)
+                        }
+                        else {
+                            alert(error.message)
+                        }
+                    });
             },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {
@@ -148,6 +200,8 @@
                             that.modifyForm.newPassword="";
                             that.modifyForm.prevPassword="";
                             that.modifyForm.confirmPassword="";
+                            that.showUser();
+                            that.getPublishment();
                         }
                     })
                     .catch(function (error) {
@@ -204,12 +258,6 @@
                             alert(error.message);
                         }
                     })
-            },
-            decideType(){
-                // if(false){
-                //     return catPic;
-                // }
-                // return dogPic;
             },
         }
     }

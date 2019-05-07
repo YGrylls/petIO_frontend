@@ -34,9 +34,9 @@
                 <hr/>
                 <strong><p class="content">宠物相册</p></strong>
                 <el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >
-                    <el-carousel-item v-for="item in adoptionDetailPhoto" :key="item.id">
-                        <!--<h3>{{ item.url }}</h3>-->
-                        <img class="adoptionDetailPhoto" v-bind:src="item.url" />
+                    <el-carousel-item v-for="item in adoptionDetailInfo.adoptionImg" :key="item.id">
+                        <!--<h3>{{ item }}</h3>-->
+                        <img class="adoptionDetailPhoto" v-bind:src="item" />
                     </el-carousel-item>
                 </el-carousel>
                 <hr/>
@@ -82,6 +82,7 @@
                     adoptionDetailAbstract:'',
                     adoptionDetailRequirement:'',
                     publishDate:'',
+                    adoptionImg:[]
                 },
                 adoptionDetailPhoto:[
                     {id:0,url:require("../assets/loginBG0.jpg")},
@@ -130,7 +131,7 @@
                             alert("error");
                         }
                         else {
-                            console.log(response.data.data)
+                            // console.log(response.data.data);
                             that.adoptionDetailInfo.aID=response.data.data.aID;
                             that.adoptionDetailInfo.adoptionTitle=response.data.data.aTitle;
                             that.adoptionDetailInfo.adoptionStatus=response.data.data.aState;
@@ -142,6 +143,8 @@
                             that.adoptionDetailInfo.adoptionDetailAbstract=response.data.data.aText;
                             that.adoptionDetailInfo.adoptionDetailRequirement=response.data.data.aDetailInfo;
                             that.adoptionDetailInfo.publishDate=response.data.data.publishDate;
+                            that.adoptionDetailInfo.adoptionImg=response.data.data.imgPaths;
+                            console.log(that.adoptionDetailInfo.adoptionImg);
                         }
                     })
                     .catch(function (error) {
