@@ -9,7 +9,7 @@
                 <el-col align="left"><i class="el-icon-time">结束时间：{{publishmentData.expireDate}}</i></el-col>
             </el-row>
         </div>
-        <el-button class="choice" size="mini" type="info" icon="el-icon-circle-plus">延时</el-button>
+        <el-button class="choice" size="mini" type="info" icon="el-icon-circle-plus" @click="open1">延时</el-button>
         <el-button class="choice" size="mini" type="danger" icon="el-icon-delete" @click="open2">删除</el-button>
 
         <img id="adoptionImg" :src="selectImg()">
@@ -34,6 +34,48 @@
             },
             gotoDetail:function () {
                 this.$router.push("/adoption/detail/"+this.publishmentData.aID);
+            },
+            open1:function(){
+                const that=this;
+                this.$confirm('此操作将延期您的送养信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var demand="/userinfo/delay/"+that.publishmentData.aID;
+                    console.log(demand);
+                    const confirm=this;
+                    this.$http.post(demand)
+                        .then(function (response) {
+                            if(response.data.code==200) {
+                                confirm.$message({
+                                    type: 'success',
+                                    message: '延时成功!'
+                                });
+                                that.showUser();
+                                that.getPublishment();
+                            }
+                            else {
+                                confirm.$message({
+                                    type: 'error',
+                                    message: response.data.message
+                                })
+                            }
+                        })
+                        .catch(function (error) {
+                            confirm.$message({
+                                type: 'error',
+                                message: '延时失败!'
+                            });
+                            console.log(error)
+                        })
+                    })
+                    .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消延时'
+                    });
+                });
             },
             open2:function () {
                 const that=this;
