@@ -8,25 +8,13 @@
         </el-card>
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
-                <!--<el-tab-pane label="个人信息" name="first">-->
-                    <!--<hr/>-->
-                    <!--<h3 class="tag">个人信息修改</h3>-->
-                    <!--<el-form ref="personalForm" :model="personalForm" :rules="personalFormRule" label-width="80px">-->
-                        <!--<el-form-item label="昵称">-->
-                            <!--<el-input :disabled="true" v-model="personalForm.name"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="手机" prop="phoneNumber">-->
-                            <!--<el-input v-model="personalForm.phone"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item>-->
-                            <!--<el-button size="mini" type="primary" @click="personalFormSubmit">确认修改</el-button>-->
-                        <!--</el-form-item>-->
-                    <!--</el-form>-->
-                <!--</el-tab-pane>-->
                 <el-tab-pane label="送养信息" name="second">
                     <personal-item v-on:listenToChildEvent="refresh" v-if="publishmentList!=[]" v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
-
                 </el-tab-pane>
+                <el-tab-pane label="申请信息" name="first">
+                    <apply-item v-if="applyList!=[]" v-for="(item,index) in applyList" :key="index" :apply-data="item"></apply-item>
+                </el-tab-pane>
+
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
                     <h3 class="tag">密码修改</h3>
@@ -65,12 +53,14 @@
     import catPic from '../assets/cat.png';
     import dogPic from '../assets/dog.png';
     import personalItem from './personal-item'
+    import applyItem from './apply-item'
     export default {
         name: "personal-info",
-        components:{personalItem},
+        components:{personalItem,applyItem},
         created(){
             this.showUser();
             this.getPublishment();
+            this.getApply();
         },
         data(){
             // var firstCheck=(rule,value,callback)=>{
@@ -128,6 +118,7 @@
                     newPassword:''
                 },
                 publishmentList:[],
+                applyList:[],
                 publishDate:new Date(),
                 emailLoading:false,
                 emailBtnTxt:"点击发送验证码",
@@ -152,6 +143,7 @@
             refresh:function(){
                 this.showUser();
                 this.getPublishment();
+                this.getApply();
             },
             // personalFormSubmit:function ()  {
             //     this.$refs["personalForm"].validate((valid)=>{
@@ -235,8 +227,9 @@
                             that.$router.push("/login");
                         }
                         else {
+                            console.log(response.data.data);
                             that.personalForm.name=response.data.data.username;
-                            that.personalForm.phone=response.data.data.userTel;
+                            that.personalForm.email=response.data.data.userMail;
                         }
                     })
                     .catch(function (error) {
@@ -255,9 +248,29 @@
                         if(response.data.code===401){
                             that.$router.push("/login");
                         }
-                        else if(response.data.code==200){
+                        else if(response.data.code===200){
                             that.publishmentList=response.data.data;
-                            console.log(that.publishmentList)
+                            // console.log(that.publishmentList)
+                        }
+                    })
+                    .catch(function (error) {
+                        if(error.response){
+                            alert(error.response.message);
+                        }
+                        else {
+                            alert(error.message);
+                        }
+                    })
+            },
+            getApply(){
+                const that=this;
+                this.$http.get("/userinfo/apply")
+                    .then(function (response) {
+                        if(response.data.code===401){
+                            that.$router.push("/login");
+                        }
+                        else if(response.data.code===200){
+                            that.applyList=response.data.data;
                         }
                     })
                     .catch(function (error) {

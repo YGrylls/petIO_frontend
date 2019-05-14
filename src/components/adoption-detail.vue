@@ -29,7 +29,7 @@
                         <p v-if="adoptionDetailInfo.free==true">金额：<strong>￥0</strong></p>
                         <p v-else>金额：<strong>￥{{adoptionDetailInfo.cost}}</strong></p>
                     </el-col>
-                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="showContactInfo">联系方式</el-button></el-col>
+                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">申请领养</el-button></el-col>
                 </el-row>
                 <hr/>
                 <strong><p class="content">宠物相册</p></strong>
@@ -93,15 +93,31 @@
             }
         },
         methods:{
+            ensureApply() {
+                const that=this;
+                this.$confirm('此操作将申请领养该宠物, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.showContactInfo();
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消申请'
+                    });
+                });
+            },
             showContactInfo:function () {
                 let id =parseInt(this.$route.params.id);
                 const url='/adoption/apply/'+id;
                 const that=this;
                 this.$http.post(url).then(function (response) {
                     if(response.data.code===200){
-                        that.$refs.applyBox.ContactInfo.Id=response.data.data.username;
-                        that.$refs.applyBox.ContactInfo.Name=response.data.data.username;
-                        that.$refs.applyBox.ContactInfo.Contact=response.data.data.userTel;
+                        console.log(response.data);
+                        that.$refs.applyBox.ContactInfo.communicationType=response.data.data.communicationType;
+                        that.$refs.applyBox.ContactInfo.communication=response.data.data.communication;
+                        that.$refs.applyBox.ContactInfo.username=response.data.data.username;
                         that.$refs.applyBox.applyBoxVisible=true;
                     }
                     that.$message(response.data.message);
