@@ -17,14 +17,13 @@
             </el-form-item>
             <el-form-item label="邮箱验证码" prop="validationCode">
                 <el-input v-model="signUpForm.validationCode" placeholder="请输入通过邮箱获得的的验证码" style="width: 70%;display: inline-block"></el-input>
-                <el-button type="primary" style="display: inline-block;float:right" @click="getValidationCode">点击发送验证码</el-button>
+                <el-button type="primary" style="display: inline-block;float:right" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
             </el-form-item>
         </el-form>
         <el-button id="signupSubmitBtn" :loading="isLoading" circle type="success" @click="submitSignup" ><i class="el-icon-check"></i></el-button>
         <el-alert class="alertInfo" v-if="alertInfo.show" :title="alertInfo.title" :type="alertInfo.type" show-icon close-text="朕已阅" @close="closeAlert"></el-alert>
     </el-dialog>
 </template>
-
 <script>
     export default {
         name: "signup-box",
@@ -37,9 +36,15 @@
                 }
 
             };
+
             var validateEmail=(rule,value,callback)=>{
                 //to be done
-                callback();
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(value)){
+                    callback(new Error('请输入正确的邮箱地址格式'))
+                }else{
+                    callback();
+                }
             };
             return{
                 signUpVisible:false,
@@ -57,9 +62,8 @@
 
                 },
                 isLoading:false,
-
-
-
+                emailLoading:false,
+                emailBtnTxt:"点击发送验证码",
                 rule:{
                     username:[
                         {required:true,message:"请输入用户名",trigger:"blur"},
@@ -89,7 +93,29 @@
                 this.alertInfo.show=false;
             },
             getValidationCode:function(){
-                //to be done
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(this.signUpForm.emailAddress)){
+                    this.$message("请先填写邮箱");
+                    return;
+                }
+                const that=this;
+                this.$http.post("-----------test----------------",{
+                    email:that.signUpForm.emailAddress
+                }).then((res)=>{
+                    if(res.data.code===200){
+                        that.emailBtnTxt="邮件验证码已发送";
+                        that.emailLoading=true;
+                    }else{
+                        that.$message(res.data.message);
+                    }
+
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
+
             },
             submitSignup:function () {
                 this.$refs["suForm"].validate((valid) => {

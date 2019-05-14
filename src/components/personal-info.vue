@@ -4,25 +4,25 @@
             <h1>{{personalForm.name}}</h1>
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
-            <p class="tag"><span>手机：</span><strong>{{personalForm.phone}}</strong></p>
+            <p class="tag"><span>邮箱：</span><strong>{{personalForm.email}}</strong></p>
         </el-card>
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
-                <el-tab-pane label="个人信息" name="first">
-                    <hr/>
-                    <h3 class="tag">个人信息修改</h3>
-                    <el-form ref="personalForm" :model="personalForm" :rules="personalFormRule" label-width="80px">
-                        <el-form-item label="昵称">
-                            <el-input :disabled="true" v-model="personalForm.name"></el-input>
-                        </el-form-item>
-                        <el-form-item label="手机" prop="phoneNumber">
-                            <el-input v-model="personalForm.phone"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button size="mini" type="primary" @click="personalFormSubmit">确认修改</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-tab-pane>
+                <!--<el-tab-pane label="个人信息" name="first">-->
+                    <!--<hr/>-->
+                    <!--<h3 class="tag">个人信息修改</h3>-->
+                    <!--<el-form ref="personalForm" :model="personalForm" :rules="personalFormRule" label-width="80px">-->
+                        <!--<el-form-item label="昵称">-->
+                            <!--<el-input :disabled="true" v-model="personalForm.name"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item label="手机" prop="phoneNumber">-->
+                            <!--<el-input v-model="personalForm.phone"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item>-->
+                            <!--<el-button size="mini" type="primary" @click="personalFormSubmit">确认修改</el-button>-->
+                        <!--</el-form-item>-->
+                    <!--</el-form>-->
+                <!--</el-tab-pane>-->
                 <el-tab-pane label="送养信息" name="second">
                     <personal-item v-on:listenToChildEvent="refresh" v-if="publishmentList!=[]" v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
 
@@ -43,15 +43,15 @@
                         <!--<el-form-item>-->
                             <!--<el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>-->
                         <!--</el-form-item>-->
-                        <el-form-item label="注册时使用的邮箱">
-                            <el-input></el-input>
+                        <el-form-item label="注册时使用的邮箱" prop="emailAddress">
+                            <el-input v-model="modifyForm.emailAddress"></el-input>
                         </el-form-item>
-                        <el-form-item label="邮箱验证码">
-                            <el-input style="display: inline-block; width: 70%"></el-input>
-                            <el-button style="display: inline-block; width: 25%;float:right">点击获取验证码</el-button>
+                        <el-form-item label="邮箱验证码" prop="validationCode">
+                            <el-input v-model="modifyForm.validationCode" style="display: inline-block; width: 70%"></el-input>
+                            <el-button type="primary" style="display: inline-block;float:right; width: 25%" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
                         </el-form-item>
-                        <el-form-item label="输入新的密码">
-                            <el-input></el-input>
+                        <el-form-item label="输入新的密码" show-password prop="newPassword">
+                            <el-input v-model="modifyForm.newPassword"></el-input>
                         </el-form-item>
                         <el-button type="primary" style="margin: 0.5em 0 0.5em 0">确认修改</el-button>
                     </el-form>
@@ -73,44 +73,54 @@
             this.getPublishment();
         },
         data(){
-            var firstCheck=(rule,value,callback)=>{
-                if(value==this.modifyForm.prevPassword){
-                    callback(new Error("新密码应与旧密码不一致"))
-                }
-                else {
-                    callback();
-                }
-            };
-            var secondCheck=(rule,value,callback)=>{
-                if(value!=this.modifyForm.newPassword){
-                    callback(new Error("密码输入不一致"))
-                }
-                else {
-                    callback();
-                }
-            };
-            var check=(rule,value,callback)=>{
-                if(value==""){
-                    callback(new Error("请输入原始密码"))
-                }
-                else {
-                    callback();
-                }
-            };
-            var validatePhone=(rule,value,callback)=>{
-                var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
-                var phone=this.personalForm.phone;
-                if(!reg.test(phone)){
-                    callback(new Error('手机号格式有误'));
+            // var firstCheck=(rule,value,callback)=>{
+            //     if(value==this.modifyForm.prevPassword){
+            //         callback(new Error("新密码应与旧密码不一致"))
+            //     }
+            //     else {
+            //         callback();
+            //     }
+            // };
+            // var secondCheck=(rule,value,callback)=>{
+            //     if(value!=this.modifyForm.newPassword){
+            //         callback(new Error("密码输入不一致"))
+            //     }
+            //     else {
+            //         callback();
+            //     }
+            // };
+            // var check=(rule,value,callback)=>{
+            //     if(value==""){
+            //         callback(new Error("请输入原始密码"))
+            //     }
+            //     else {
+            //         callback();
+            //     }
+            // };
+            // var validatePhone=(rule,value,callback)=>{
+            //     var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
+            //     var phone=this.personalForm.phone;
+            //     if(!reg.test(phone)){
+            //         callback(new Error('手机号格式有误'));
+            //     }else{
+            //         callback();
+            //     }
+            // };
+
+            var validateEmail=(rule,value,callback)=>{
+                //to be done
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(value)){
+                    callback(new Error('请输入正确的邮箱地址格式'))
                 }else{
                     callback();
                 }
             };
             return{
-                activeName:'first',
+                activeName:'second',
                 personalForm: {
                     name: '',
-                    phone: '',
+                    email: '',
                 },
                 modifyForm:{
                     emailAddress:'',
@@ -119,31 +129,23 @@
                 },
                 publishmentList:[],
                 publishDate:new Date(),
-
+                emailLoading:false,
+                emailBtnTxt:"点击发送验证码",
                 modifyrule:{
-                    prevPassword:[
-                        {require:true,message:"请输入原始密码",trigger:"blur"},
-                        {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
-                        {validator:check,trigger:"blur"}
-                        ],
                     newPassword:[
-                        {require:true,message:"请输入新密码",trigger:"blur"},
+                        {required:true,message:"请输入新密码",trigger:"blur"},
                         {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
-                        {validator:firstCheck,trigger:"blur"}
                     ],
-                    confirmPassword:[
-                        {require:true,message:"请输入确认密码",trigger:"blur"},
-                        {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
-                        {validator:secondCheck,trigger:"blur"}
-                    ]
-                },
-                personalFormRule:{
-                    phoneNumber:[
-                        // {required:true, message:"请输入手机号码",trigger:"blur"},
-                        {validator: validatePhone,trigger:"blur"}
+                    validationCode:[
+                        {required:true,message:"请输入验证码",trigger:"blur"},
+                        {min:6,max:32,trigger:"blur"},
+                    ],
+                    emailAddress:[
+                        {required:true,message:"请输入验证码",trigger:"blur"},
+                        {min:6,max:36,trigger:"blur"},
+                        {validator:validateEmail,trigger:"blur"}
                     ]
                 }
-
             }
         },
         methods:{
@@ -151,41 +153,41 @@
                 this.showUser();
                 this.getPublishment();
             },
-            personalFormSubmit:function ()  {
-                this.$refs["personalForm"].validate((valid)=>{
-                    if(valid){
-                        this.modifyPersonalInfo();
-                    }
-                    else {
-                        return false;
-                    }
-                })
-            },
-            modifyPersonalInfo:function(){
-                const that=this;
-                this.$http.post("/userinfo/changePhone",{
-                    username:that.personalForm.name,
-                    userTel:that.personalForm.phone
-                })
-                    .then(function (response) {
-                        if(response.data.code==200){
-                            alert("修改成功！");
-                            that.showUser();
-                            that.getPublishment();
-                        }
-                        else {
-                            alert("error");
-                        }
-                    })
-                    .catch(function (error) {
-                        if(error.response){
-                            alert(error.response.message)
-                        }
-                        else {
-                            alert(error.message)
-                        }
-                    });
-            },
+            // personalFormSubmit:function ()  {
+            //     this.$refs["personalForm"].validate((valid)=>{
+            //         if(valid){
+            //             this.modifyPersonalInfo();
+            //         }
+            //         else {
+            //             return false;
+            //         }
+            //     })
+            // },
+            // modifyPersonalInfo:function(){
+            //     const that=this;
+            //     this.$http.post("/userinfo/changePhone",{
+            //         username:that.personalForm.name,
+            //         userTel:that.personalForm.phone
+            //     })
+            //         .then(function (response) {
+            //             if(response.data.code===200){
+            //                 alert("修改成功！");
+            //                 that.showUser();
+            //                 that.getPublishment();
+            //             }
+            //             else {
+            //                 alert("error");
+            //             }
+            //         })
+            //         .catch(function (error) {
+            //             if(error.response){
+            //                 alert(error.response.message)
+            //             }
+            //             else {
+            //                 alert(error.message)
+            //             }
+            //         });
+            // },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {
                     if(valid){
@@ -198,19 +200,16 @@
             },
             modify:function(){
                 const that=this;
-                this.$http.post("/userinfo/changePassword",{
-                    oldpass:that.modifyForm.prevPassword,
-                    newpass:that.modifyForm.newPassword
-                })
+                this.$http.post("/userinfo/changePassword",that.modifyForm)
                     .then(function (response) {
-                        if(response.data.code!=200){
+                        if(response.data.code!==200){
                             alert("error!");
                         }
                         else {
                             alert("修改成功！");
                             that.modifyForm.newPassword="";
-                            that.modifyForm.prevPassword="";
-                            that.modifyForm.confirmPassword="";
+                            that.modifyForm.emailAddress="";
+                            that.modifyForm.validationCode="";
                             that.showUser();
                             that.getPublishment();
                         }
@@ -269,6 +268,31 @@
                             alert(error.message);
                         }
                     })
+            },
+            getValidationCode:function(){
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(this.signUpForm.emailAddress)){
+                    this.$message("请先填写邮箱");
+                    return;
+                }
+                const that=this;
+                this.$http.post("-----------test----------------",{
+                    email:that.signUpForm.emailAddress
+                }).then((res)=>{
+                    if(res.data.code===200){
+                        that.emailBtnTxt="邮件验证码已发送";
+                        that.emailLoading=true;
+                    }else{
+                        that.$message(res.data.message);
+                    }
+
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
+
             },
         }
     }
