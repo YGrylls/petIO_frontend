@@ -208,12 +208,34 @@
                     })
                 }
             },
+            showUser(){
+                const that=this;
+                this.$http.get("/userinfo/info")
+                    .then(function (response) {
+                        if(response.data.code!==200){
+                            that.$message({
+                                type:"warning",
+                                message:response.data.message
+                            });
+                            that.$router.push("/login");
+                        }
+                    })
+                    .catch(function () {
+                        that.$message({
+                            type:"warning",
+                            message:"Network Error"
+                        })
+                    })
+            },
             handleUploadError(){
                 this.$message({
                     type:"error",
                     message:"上传失败"
                 })
             }
+        },
+        created(){
+            this.showUser();
         }
     }
 </script>

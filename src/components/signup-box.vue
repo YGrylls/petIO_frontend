@@ -15,9 +15,9 @@
             <el-form-item label="邮箱地址" prop="emailAddress">
                 <el-input :maxlength="36" v-model="signUpForm.emailAddress" placeholder="请输入可用的邮箱"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱验证码" prop="validationCode">
-                <el-input v-model="signUpForm.validationCode" placeholder="请输入通过邮箱获得的的验证码" style="width: 70%;display: inline-block"></el-input>
-                <el-button type="primary" style="display: inline-block;float:right" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
+            <el-form-item label="邮箱验证码" prop="verifyCode">
+                <el-input v-model="signUpForm.verifyCode" placeholder="请输入通过邮箱获得的的验证码" style="width: 70%;display: inline-block"></el-input>
+                <el-button type="primary" style="display: inline-block;float:right;width:25%" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
             </el-form-item>
         </el-form>
         <el-button id="signupSubmitBtn" :loading="isLoading" circle type="success" @click="submitSignup" ><i class="el-icon-check"></i></el-button>
@@ -53,7 +53,7 @@
                     password:"",
                     passwordConfirm:"",
                     emailAddress:"",
-                    validationCode:""
+                    verifyCode:""
                 },
                 alertInfo:{
                     show:false,
@@ -82,7 +82,7 @@
                         {validator: validateEmail,trigger:"blur"}
 
                     ],
-                    validationCode:[
+                    verifyCode:[
                         {required:true, message:"请输入验证码",trigger:"blur"},
                     ]
                 }
@@ -95,15 +95,19 @@
             getValidationCode:function(){
                 let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
                 if(!reg.test(this.signUpForm.emailAddress)){
-                    this.$message("请先填写邮箱");
+                    this.$message("请先正确填写邮箱");
                     return;
                 }
                 const that=this;
-                this.$http.post("-----------test----------------",{
-                    email:that.signUpForm.emailAddress
-                }).then((res)=>{
+                this.$http.post("mailcodeonsignup",
+                    that.signUpForm.emailAddress,{
+                        headers: {
+                            'Content-Type':'text/plain'
+                        }
+                    }
+                ).then((res)=>{
                     if(res.data.code===200){
-                        that.emailBtnTxt="邮件验证码已发送";
+                        that.emailBtnTxt="验证码已发送";
                         that.emailLoading=true;
                     }else{
                         that.$message(res.data.message);
@@ -132,7 +136,8 @@
                 this.$http.post('/signup',{
                     username:this.signUpForm.username,
                     password:this.signUpForm.password,
-                    userTel:this.signUpForm.phoneNumber
+                    verifyCode:this.signUpForm.verifyCode,
+                    userMail:this.signUpForm.emailAddress
                 })
                     .then(function(response){
                         that.alertInfo.title=response.data.message;

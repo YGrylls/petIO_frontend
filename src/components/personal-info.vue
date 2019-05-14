@@ -34,14 +34,14 @@
                         <el-form-item label="注册时使用的邮箱" prop="emailAddress">
                             <el-input v-model="modifyForm.emailAddress"></el-input>
                         </el-form-item>
-                        <el-form-item label="邮箱验证码" prop="validationCode">
-                            <el-input v-model="modifyForm.validationCode" style="display: inline-block; width: 70%"></el-input>
+                        <el-form-item label="邮箱验证码" prop="verifyCode">
+                            <el-input v-model="modifyForm.verifyCode" style="display: inline-block; width: 70%"></el-input>
                             <el-button type="primary" style="display: inline-block;float:right; width: 25%" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
                         </el-form-item>
-                        <el-form-item label="输入新的密码" show-password prop="newPassword">
-                            <el-input v-model="modifyForm.newPassword"></el-input>
+                        <el-form-item label="输入新的密码" prop="newPassword">
+                            <el-input v-model="modifyForm.newPassword" show-password></el-input>
                         </el-form-item>
-                        <el-button type="primary" style="margin: 0.5em 0 0.5em 0">确认修改</el-button>
+                        <el-button type="primary" style="margin: 0.5em 0 0.5em 0" @click="modifyFormSubmit">确认修改</el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -114,7 +114,7 @@
                 },
                 modifyForm:{
                     emailAddress:'',
-                    validationCode:'',
+                    verifyCode:'',
                     newPassword:''
                 },
                 publishmentList:[],
@@ -127,7 +127,7 @@
                         {required:true,message:"请输入新密码",trigger:"blur"},
                         {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
                     ],
-                    validationCode:[
+                    verifyCode:[
                         {required:true,message:"请输入验证码",trigger:"blur"},
                         {min:6,max:32,trigger:"blur"},
                     ],
@@ -195,13 +195,16 @@
                 this.$http.post("/userinfo/changePassword",that.modifyForm)
                     .then(function (response) {
                         if(response.data.code!==200){
-                            alert("error!");
+                            that.$message({
+                                type:"warning",
+                                message:response.data.message
+                            })
                         }
                         else {
                             alert("修改成功！");
                             that.modifyForm.newPassword="";
                             that.modifyForm.emailAddress="";
-                            that.modifyForm.validationCode="";
+                            that.modifyForm.verifyCode="";
                             that.showUser();
                             that.getPublishment();
                         }
@@ -284,13 +287,17 @@
             },
             getValidationCode:function(){
                 let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-                if(!reg.test(this.signUpForm.emailAddress)){
-                    this.$message("请先填写邮箱");
+                if(!reg.test(this.modifyForm.emailAddress)){
+                    console.log(this.modifyForm);
+                    this.$message("请先正确填写邮箱");
                     return;
                 }
                 const that=this;
-                this.$http.post("-----------test----------------",{
-                    email:that.signUpForm.emailAddress
+                this.$http.post("mailcodeonchangepwd",
+                    that.modifyForm.emailAddress,{
+                        headers: {
+                            'Content-Type':'text/plain'
+                        }
                 }).then((res)=>{
                     if(res.data.code===200){
                         that.emailBtnTxt="邮件验证码已发送";
