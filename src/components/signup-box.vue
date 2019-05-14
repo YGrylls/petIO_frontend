@@ -12,8 +12,12 @@
             <el-form-item label="再次输入密码" prop="passwordConfirm">
                 <el-input :maxlength="16" v-model="signUpForm.passwordConfirm" show-password placeholder="请再次输入密码"></el-input>
             </el-form-item>
-            <el-form-item label="手机号码" prop="phoneNumber">
-                <el-input :maxlength="11" v-model="signUpForm.phoneNumber" placeholder="请输入手机号码"></el-input>
+            <el-form-item label="邮箱地址" prop="emailAddress">
+                <el-input :maxlength="36" v-model="signUpForm.emailAddress" placeholder="请输入可用的邮箱"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱验证码" prop="validationCode">
+                <el-input v-model="signUpForm.validationCode" placeholder="请输入通过邮箱获得的的验证码" style="width: 70%;display: inline-block"></el-input>
+                <el-button type="primary" style="display: inline-block;float:right" @click="getValidationCode">点击发送验证码</el-button>
             </el-form-item>
         </el-form>
         <el-button id="signupSubmitBtn" :loading="isLoading" circle type="success" @click="submitSignup" ><i class="el-icon-check"></i></el-button>
@@ -25,14 +29,6 @@
     export default {
         name: "signup-box",
         data(){
-            var validatePhone=(rule,value,callback)=>{
-                var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
-                if(!reg.test(value)){
-                    callback(new Error('手机号格式有误'));
-                }else{
-                    callback();
-                }
-            };
             var doubleCheck=(rule,value,callback)=>{
                 if(value!==this.signUpForm.password){
                     callback(new Error('密码输入不一致'));
@@ -41,13 +37,18 @@
                 }
 
             };
+            var validateEmail=(rule,value,callback)=>{
+                //to be done
+                callback();
+            };
             return{
                 signUpVisible:false,
                 signUpForm:{
                     username:"",
                     password:"",
                     passwordConfirm:"",
-                    phoneNumber:""
+                    emailAddress:"",
+                    validationCode:""
                 },
                 alertInfo:{
                     show:false,
@@ -72,10 +73,13 @@
                         {required:true, message:"请再次输入密码",trigger:"blur"},
                         {validator: doubleCheck,trigger:"blur"},
                     ],
-                    phoneNumber:[
-                        {required:true, message:"请输入手机号码",trigger:"blur"},
-                        {validator: validatePhone,trigger:"blur"}
+                    emailAddress:[
+                        {required:true, message:"请输入邮箱",trigger:"blur"},
+                        {validator: validateEmail,trigger:"blur"}
 
+                    ],
+                    validationCode:[
+                        {required:true, message:"请输入验证码",trigger:"blur"},
                     ]
                 }
             }
@@ -84,7 +88,9 @@
             closeAlert:function () {
                 this.alertInfo.show=false;
             },
-
+            getValidationCode:function(){
+                //to be done
+            },
             submitSignup:function () {
                 this.$refs["suForm"].validate((valid) => {
                     if(valid){

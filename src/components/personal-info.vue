@@ -30,19 +30,30 @@
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
                     <h3 class="tag">密码修改</h3>
-                    <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-width="80px">
-                        <el-form-item label="旧密码" prop="prevPassword">
-                            <el-input :minlength="8" :maxlength="16" v-model="modifyForm.prevPassword" show-password placeholder="请输入旧密码"></el-input>
+                    <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-position="top" style="text-align: left">
+                        <!--<el-form-item label="旧密码" prop="prevPassword">-->
+                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.prevPassword" show-password placeholder="请输入旧密码"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item label="新密码" prop="newPassword">-->
+                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.newPassword" show-password placeholder="请输入新密码"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item label="确认密码" prop="confirmPassword">-->
+                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.confirmPassword" show-password placeholder="请确认新密码"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item>-->
+                            <!--<el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>-->
+                        <!--</el-form-item>-->
+                        <el-form-item label="注册时使用的邮箱">
+                            <el-input></el-input>
                         </el-form-item>
-                        <el-form-item label="新密码" prop="newPassword">
-                            <el-input :minlength="8" :maxlength="16" v-model="modifyForm.newPassword" show-password placeholder="请输入新密码"></el-input>
+                        <el-form-item label="邮箱验证码">
+                            <el-input style="display: inline-block; width: 70%"></el-input>
+                            <el-button style="display: inline-block; width: 25%;float:right">点击获取验证码</el-button>
                         </el-form-item>
-                        <el-form-item label="确认密码" prop="confirmPassword">
-                            <el-input :minlength="8" :maxlength="16" v-model="modifyForm.confirmPassword" show-password placeholder="请确认新密码"></el-input>
+                        <el-form-item label="输入新的密码">
+                            <el-input></el-input>
                         </el-form-item>
-                        <el-form-item>
-                            <el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>
-                        </el-form-item>
+                        <el-button type="primary" style="margin: 0.5em 0 0.5em 0">确认修改</el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -102,9 +113,9 @@
                     phone: '',
                 },
                 modifyForm:{
-                    prevPassword:'',
-                    newPassword:'',
-                    confirmPassword:''
+                    emailAddress:'',
+                    validationCode:'',
+                    newPassword:''
                 },
                 publishmentList:[],
                 publishDate:new Date(),
