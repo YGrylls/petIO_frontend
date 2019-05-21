@@ -31,7 +31,6 @@
                     </el-col>
                     <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">申请领养</el-button></el-col>
                 </el-row>
-                <hr/>
                 <strong><p class="content">宠物相册</p></strong>
                 <el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >
                     <el-carousel-item v-for="item in adoptionDetailInfo.adoptionImg" :key="item.id">
@@ -39,12 +38,12 @@
                         <img class="adoptionDetailPhoto" v-bind:src="item" />
                     </el-carousel-item>
                 </el-carousel>
-                <hr/>
                 <strong><p class="content">宠物简介</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
-                <hr/>
                 <strong><p class="content">领养要求</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
+                <comment-container ref="comments" class="comment"></comment-container>
+
             </el-card>
             <el-card id="adoption-detail-aside">
                 <el-row>
@@ -59,9 +58,10 @@
 
 <script>
     import ApplyBox from './apply-box';
+    import CommentContainer from "./comment-container";
     export default {
         name: "adoption-detail",
-        components: {ApplyBox},
+        components: {CommentContainer, ApplyBox},
         created(){
             this.getData();
         },
@@ -160,6 +160,8 @@
                             that.adoptionDetailInfo.adoptionDetailRequirement=response.data.data.aDetailInfo;
                             that.adoptionDetailInfo.publishDate=response.data.data.publishDate;
                             that.adoptionDetailInfo.adoptionImg=response.data.data.imgPaths;
+                            that.$refs.comments.adoptionId=response.data.data.aID;
+                            that.$refs.comments.getComments();
                             console.log(that.adoptionDetailInfo.adoptionImg);
                         }
                     })
@@ -190,12 +192,16 @@
 <style scoped>
     .content{
         text-align: left;
+        margin-bottom: 2em;
     }
     #adoption-detail-card{
         margin-left: 3%;
         padding-right: 2%;
         width: 60%;
         margin-top: 20px;
+    }
+    .comment{
+        margin:0.5em;
     }
     #adoption-detail-aside{
 
