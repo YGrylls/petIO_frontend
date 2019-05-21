@@ -4,7 +4,8 @@
 
 <script>
     export default {
-        name: "comment-info"
+        name: "comment-info",
+        props:["comment"]
     }
 </script>
 
