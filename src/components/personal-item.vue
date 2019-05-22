@@ -47,13 +47,13 @@
                     const confirm=this;
                     this.$http.post(demand)
                         .then(function (response) {
-                            if(response.data.code==200) {
+                            if(response.data.code===200) {
                                 confirm.$message({
                                     type: 'success',
                                     message: '延时成功!'
                                 });
-                                that.showUser();
-                                that.getPublishment();
+                                that.$parent.showUser();
+                                that.$parent.getPublishment();
                             }
                             else {
                                 confirm.$message({

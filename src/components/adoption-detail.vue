@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="margin-bottom: 2em">
         <el-container>
             <el-card id="adoption-detail-card">
                 <el-row>
@@ -15,7 +15,7 @@
                 <el-row>
                     <el-col align="left"><i class="el-icon-time">{{adoptionDetailInfo.publishDate}}</i></el-col>
                 </el-row>
-                <el-row>
+                <el-row style="text-align: left">
                     <el-col :span="3"><p>类型：<strong>{{adoptionDetailInfo.category}}</strong></p></el-col>
                     <el-col :span="3">
                         <p v-if="adoptionDetailInfo.gender=='female'">性别：<strong>母</strong></p>
@@ -41,18 +41,24 @@
                         <!--<img class="adoptionDetailPhoto" v-bind:src="item" />-->
                     <!--</el-carousel-item>-->
                 <!--</el-carousel>-->
-                <strong><p class="content">宠物简介</p></strong>
-                <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
                 <strong><p class="content">领养要求</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
+                <strong><p class="content">宠物照片</p></strong>
+                <viewer :images="adoptionDetailInfo.adoptionImg">
+                    <img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >
+                </viewer>
+                <strong><p class="content">宠物简介</p></strong>
+                <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
+                <strong><p class="content">留言区</p></strong>
                 <comment-container :a-author="adoptionDetailInfo.editor" ref="comments" class="comment"></comment-container>
 
             </el-card>
             <el-card id="adoption-detail-aside">
-                <h2>宠物相册</h2>
-                <viewer :images="adoptionDetailInfo.adoptionImg">
-                    <img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >
-                </viewer>
+                <h2>发布人信息</h2>
+                <p>To be done</p>
+                <!--<viewer :images="adoptionDetailInfo.adoptionImg">-->
+                    <!--<img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >-->
+                <!--</viewer>-->
                 <!--<el-row>-->
                     <!--<el-col :span="8"><p>领养推荐</p></el-col>-->
                     <!--<el-col :span="4" :offset="12"><el-button type="text">更多</el-button></el-col>-->
@@ -222,13 +228,21 @@
 
 
     .adoptionDetailPhoto{
-        padding: 0;
-        margin: 0;
-        width: 20vw;
-        height: 20vw;
+        margin: 0.5em;
+        width: 11vw;
+        height:11vw;
         object-fit: cover;
+        border: gray;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 0.2em;
+        transition: 0.5s;
         /*width: 100%;*/
         /*display: block;*/
+    }
+    .adoptionDetailPhoto:hover{
+
+        transform:scale(1.05);
     }
     .AdoptionBtn{
         text-align: right;
