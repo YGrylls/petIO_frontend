@@ -45,7 +45,7 @@
                 <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
                 <strong><p class="content">领养要求</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
-                <comment-container ref="comments" class="comment"></comment-container>
+                <comment-container :a-author="adoptionDetailInfo.editor" ref="comments" class="comment"></comment-container>
 
             </el-card>
             <el-card id="adoption-detail-aside">
@@ -80,6 +80,7 @@
                 adoptionDetailInfo:{
                     aID:0,
                     adoptionTitle:'',
+                    editor:'',
                     adoptionStatus:0,
                     adoptionPosition:'',
                     category:"",
@@ -156,6 +157,7 @@
                         else {
                             // console.log(response.data.data);
                             that.adoptionDetailInfo.aID=response.data.data.aID;
+                            that.adoptionDetailInfo.editor=response.data.data.editor;
                             that.adoptionDetailInfo.adoptionTitle=response.data.data.aTitle;
                             that.adoptionDetailInfo.adoptionStatus=response.data.data.aState;
                             that.adoptionDetailInfo.adoptionPosition=response.data.data.location;
