@@ -31,13 +31,16 @@
                     </el-col>
                     <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">申请领养</el-button></el-col>
                 </el-row>
-                <strong><p class="content">宠物相册</p></strong>
-                <el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >
-                    <el-carousel-item v-for="item in adoptionDetailInfo.adoptionImg" :key="item.id">
-                        <!--<h3>{{ item }}</h3>-->
-                        <img class="adoptionDetailPhoto" v-bind:src="item" />
-                    </el-carousel-item>
-                </el-carousel>
+                <!--<strong><p class="content">宠物相册</p></strong>-->
+                <!--<viewer :images="adoptionDetailInfo.adoptionImg">-->
+                    <!--<img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :src="src" :key="src">-->
+                <!--</viewer>-->
+                <!--<el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >-->
+                    <!--<el-carousel-item v-for="item in adoptionDetailInfo.adoptionImg" :key="item.id">-->
+                        <!--&lt;!&ndash;<h3>{{ item }}</h3>&ndash;&gt;-->
+                        <!--<img class="adoptionDetailPhoto" v-bind:src="item" />-->
+                    <!--</el-carousel-item>-->
+                <!--</el-carousel>-->
                 <strong><p class="content">宠物简介</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
                 <strong><p class="content">领养要求</p></strong>
@@ -46,10 +49,14 @@
 
             </el-card>
             <el-card id="adoption-detail-aside">
-                <el-row>
-                    <el-col :span="8"><p>领养推荐</p></el-col>
-                    <el-col :span="4" :offset="12"><el-button type="text">更多</el-button></el-col>
-                </el-row>
+                <h2>宠物相册</h2>
+                <viewer :images="adoptionDetailInfo.adoptionImg">
+                    <img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >
+                </viewer>
+                <!--<el-row>-->
+                    <!--<el-col :span="8"><p>领养推荐</p></el-col>-->
+                    <!--<el-col :span="4" :offset="12"><el-button type="text">更多</el-button></el-col>-->
+                <!--</el-row>-->
             </el-card>
         </el-container>
         <apply-box ref="applyBox"></apply-box>
@@ -209,10 +216,17 @@
         width:25%;
         margin-top: 20px;
     }
+
+
+
     .adoptionDetailPhoto{
-        width: 100%;
-        height: auto;
-        display: block;
+        padding: 0;
+        margin: 0;
+        width: 20vw;
+        height: 20vw;
+        object-fit: cover;
+        /*width: 100%;*/
+        /*display: block;*/
     }
     .AdoptionBtn{
         text-align: right;

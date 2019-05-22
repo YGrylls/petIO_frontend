@@ -5,9 +5,18 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(Viewer, {
+    defaultOptions: {
+        zIndex: 9999
+    }
+});
+
 axios.defaults.baseURL="http://localhost:8081/api/";
 axios.defaults.withCredentials=true;
 Vue.prototype.$http=axios;
