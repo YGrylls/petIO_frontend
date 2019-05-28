@@ -94,7 +94,7 @@
                         that.listArray=response.data.data.list;
                     }
                     that.fullscreenLoading=false;
-                    that.$message(response.data.message);
+                    //that.$message(response.data.message);
                     if(response.data.code===401){
                         that.$router.push("/login");
                     }

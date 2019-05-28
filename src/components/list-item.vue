@@ -3,7 +3,7 @@
         <div @click="viewDetail" id="content">
             <h3>{{adoptionData.aTitle}}</h3>
             <div style="display: flex">
-                <div style="width: 60%">
+                <div style="width: 45%">
                     <p>{{adoptionData.editor}} 送养的 {{adoptionData.aType}}</p>
                     <p><i class="el-icon-location"></i> {{adoptionData.location}}  <i class="el-icon-date"></i> {{adoptionData.publishDate}}</p>
                     <p>{{testShow}}</p>

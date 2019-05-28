@@ -9,10 +9,10 @@
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
                 <el-tab-pane label="送养信息" name="second">
-                    <personal-item v-on:listenToChildEvent="refresh"  v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
+                    <personal-item @refresh="refresh" v-on:listenToChildEvent="refresh"  v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
                 </el-tab-pane>
                 <el-tab-pane label="申请信息" name="first">
-                    <apply-item v-for="(item,index) in applyList" :key="index" :apply-data="item"></apply-item>
+                    <apply-item  @refresh="refresh" v-for="(item,index) in applyList" :key="index" :publishment-data="item" :chosen-list="chosenList"></apply-item>
                 </el-tab-pane>
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
@@ -61,6 +61,7 @@
             this.showUser();
             this.getPublishment();
             this.getApply();
+            this.getChosen();
         },
         data(){
 
@@ -84,6 +85,7 @@
                     verifyCode:'',
                     newPassword:''
                 },
+                chosenList:[],
                 publishmentList:[],
                 applyList:[],
                 publishDate:new Date(),
@@ -107,10 +109,29 @@
             }
         },
         methods:{
+            getChosen(){
+                const that=this;
+                this.$http.get("/userinfo/AfterFirst").then((res)=>{
+                    if(res.data.code===200){
+                        that.chosenList=res.data.data;
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
+            },
             refresh:function(){
                 this.showUser();
                 this.getPublishment();
                 this.getApply();
+                this.getChosen();
             },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {

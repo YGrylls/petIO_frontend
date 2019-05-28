@@ -7,6 +7,7 @@
                     <el-col :span="4" :offset="4">
                         <!--<el-button type="text" v-if="adoptionDetailInfo.adoptionStatus==0" class="AdoptionBtn">未领养</el-button>-->
                         <!--<el-button type="text" v-else class="AdoptionBtn">未领养</el-button>-->
+                        <el-tag style="margin-top: 2em;float: right;font-size: 1em" :type="tagType">{{tagText}}</el-tag>
                     </el-col>
                 </el-row>
                 <el-row id="locate">
@@ -29,7 +30,7 @@
                         <p v-if="adoptionDetailInfo.free==true">金额：<strong>￥0</strong></p>
                         <p v-else>金额：<strong>￥{{adoptionDetailInfo.cost}}</strong></p>
                     </el-col>
-                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">联系方式</el-button></el-col>
+                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" :disabled="isApplyDisable" @click="ensureApply">{{applyText}}</el-button></el-col>
                 </el-row>
                 <strong><p class="content">领养要求</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
@@ -44,8 +45,7 @@
 
             </el-card>
             <el-card id="adoption-detail-aside">
-                <h2>发布人信息</h2>
-                <p>To be done</p>
+                <user-info-box :user-box-info="userBoxInfo"></user-info-box>
             </el-card>
         </el-container>
         <apply-box ref="applyBox"></apply-box>
@@ -55,14 +55,22 @@
 <script>
     import ApplyBox from './apply-box';
     import CommentContainer from "./comment-container";
+    import UserInfoBox from "./user-info-box";
     export default {
         name: "adoption-detail",
-        components: {CommentContainer, ApplyBox},
+        components: {UserInfoBox, CommentContainer, ApplyBox},
         created(){
             this.getData();
         },
         data(){
             return{
+                userBoxInfo:{
+
+                },
+                tagType:"",
+                tagText:"可申请",
+                isApplyDisable:false,
+                applyText:"联系方式",
                 adoptionId:{
                     id:""
                 },
@@ -92,7 +100,7 @@
         methods:{
             ensureApply() {
                 const that=this;
-                this.$confirm('您一天至多可以申请三个送养发布信息的联系方式, 是否继续?', '提示', {
+                this.$confirm('您一天至多可以申请三个送养发布信息的联系方式, 是否继续?（若您申请过该处联系方式则不会累加）', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -161,16 +169,35 @@
                             that.$refs.comments.adoptionId=response.data.data.aID;
                             that.$refs.comments.getComments();
                             console.log(that.adoptionDetailInfo.adoptionImg);
+
+                            if(that.adoptionDetailInfo.adoptionStatus!==1){
+                                that.isApplyDisable=true;
+                                that.applyText="无法申请联系方式";
+                                if(that.adoptionDetailInfo.adoptionStatus===4){
+                                    that.tagType="danger";
+                                    that.tagText="已关闭";
+                                }else if(this.adoptionDetailInfo.adoptionStatus===5){
+                                    that.tagType="warning";
+                                    that.tagText="已完成";
+                                }else if(that.adoptionDetailInfo.adoptionStatus===6){
+                                    that.tagType="warning";
+                                    that.tagText="已进入确认流程";
+                                }
+
+                            }
                         }
                     })
                     .catch(function (error) {
                         alert(error);
-                    })
-                
+                    });
+
             }
         },
         mounted(){
             const that=this;
+
+
+
             window.onresize=()=>{
                 return(()=>{
                     window.screenWidth=document.body.clientWidth;
