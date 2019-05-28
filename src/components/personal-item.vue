@@ -1,55 +1,66 @@
 <template>
-    <el-card id="personalItem">
-        <div id="personalContent" @click="gotoDetail">
-            <h4>{{publishmentData.aTitle}}</h4>
-            <el-tag :type="tagType" id="state" >{{getState}}</el-tag>
-            <el-row>
-                <el-col align="left"><i class="el-icon-time">刷新时间：{{publishmentData.publishDate}}</i></el-col>
-            </el-row>
-            <el-row>
-                <el-col align="left"><i class="el-icon-time">关闭时间：{{publishmentData.expireDate}}</i></el-col>
-            </el-row>
-        </div>
-        <el-button class="choice" size="mini" type="info" icon="el-icon-circle-plus" @click="open1">延时</el-button>
-        <el-button class="choice" size="mini" type="danger" icon="el-icon-delete" @click="open2">删除</el-button>
-        <el-button class="choice" size="mini" :disabled="isCandidateDisable" type="info" icon="el-icon-delete" @click="open3">{{candidateText}}</el-button>
-        <el-dialog title="在该发布下申请过您联系方式的用户" :visible.sync="dialogVisible" width="30%">
-            <div id="candidateList">
+    <div>
+        <el-card id="personalItem">
+            <div id="personalContent" @click="gotoDetail">
+                <h4>{{publishmentData.aTitle}} <span><el-tag :type="tagType" id="state" >{{getState}}</el-tag></span></h4>
+                <el-row>
+                    <el-col align="left"><i class="el-icon-time">刷新时间：{{publishmentData.publishDate}}</i></el-col>
+                </el-row>
+                <el-row>
+                    <el-col align="left"><i class="el-icon-time">关闭时间：{{publishmentData.expireDate}}</i></el-col>
+                </el-row>
+            </div>
+            <el-button class="choice" size="mini" type="primary" icon="el-icon-circle-plus" @click="open1">延时</el-button>
+            <el-button class="choice" size="mini" type="danger" icon="el-icon-delete" @click="open2">删除</el-button>
+            <el-button class="choice" size="mini" :disabled="isCandidateDisable"  icon="el-icon-check" @click="open3">{{candidateText()}}</el-button>
+            <img id="adoptionImg" :src="selectImg()">
+        </el-card>
+        <el-dialog title="在该发布下申请过您联系方式的用户" :visible.sync="dialogVisible" width="620px">
+            <div id="candidateList" style="text-align: left">
                 <h2>请完全确认并和领养方完成交接工作后再于此确认！</h2>
-                <h2>强烈推荐与领养方签署领养民事合同 <span>《民事合同模板》</span></h2>
+                <h2 style="margin-bottom: 1.5em">强烈推荐与领养方签署领养民事合同 <span>《民事合同模板》</span></h2>
+                <h3 v-if="candidateList.length===0">暂时没有用户在此申请过您的联系方式哦</h3>
                 <div v-for="(item, index) in candidateList" :key="index">
                     <h3>{{item.username}} <span style="float: right">
-                        <el-button-group>
-                            <el-button type="primary"  icon="el-icon-search" @click="checkUser(item.username)">查看用户</el-button>
-                            <el-button type="primary"  @click="chooseUser(item.username)">确认选择<i class="el-icon-check el-icon--right"></i></el-button>
-                        </el-button-group>
-                    </span></h3>
+                            <el-button-group>
+                                <el-button type="primary" size="mini" icon="el-icon-search" @click="checkUser(item.username)">查看用户</el-button>
+                                <el-button type="primary" size="mini"  @click="chooseUser(item.username)">确认选择<i class="el-icon-check el-icon--right"></i></el-button>
+                            </el-button-group>
+                        </span></h3>
                     <hr style="color:grey"/>
                 </div>
             </div>
         </el-dialog>
-        <el-dialog :visible.sync="dialogVisible" width="30%">
-            <user-info-box></user-info-box>
+        <el-dialog :visible.sync="userDialogVisible" width="30%">
+            <user-info-box :user-box-info="userBoxInfo"></user-info-box>
         </el-dialog>
         <el-dialog title="确认选择领养人" :visible.sync="confirmDialogVisible" width="40%">
             <confirm-info></confirm-info>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="confirmDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="chooseSelectedUser()">我已和{{chosenUser}}完成交接并确认选择</el-button>
+                <el-button type="primary" @click="chooseSelectedUser()">我已和 {{chosenUser}} 完成交接并确认选择</el-button>
             </div>
         </el-dialog>
-        <img id="adoptionImg" :src="selectImg()">
-    </el-card>
+    </div>
 </template>
 
 <script>
     import catPic from '../assets/cat.png';
     import dogPic from '../assets/dog.png';
+    import userInfoBox from './user-info-box';
+    import confirmInfo from './comfirm-info';
     export default {
         name: "personal-item",
         props:["publishmentData"],
+        components:{
+            userInfoBox,
+            confirmInfo
+        },
         data(){
             return{
+                userBoxInfo:{
+                    username:"",
+                },
                 isCandidateDisable:false,
                 dialogVisible:false,
                 confirmDialogVisible:false,
@@ -57,7 +68,7 @@
                 userDialogVisible:false,
                 chosenUser:"",
                 getState:"可申请",
-                tagType:""
+                tagType:"",
             }
         },
 
@@ -71,19 +82,25 @@
                 this.confirmDialogVisible=true;
 
             },
+            getUserBox(){
+                this.checkUSer(this.chosenUser);
+                this.userDialogVisible=true;
+            },
             chooseSelectedUser(){
                 const that=this;
-                this.$http("/userinfo/firstHandShake",{
+                this.$http.post("/userinfo/firstHandShake",{
                     aID:this.publishmentData.aID,
                     username:this.chosenUser
                 }).then((res)=>{
                     if(res.data.code===200){
-                        that.message("成功，请等待对方确认");
+                        that.$message({
+                            type:"success",
+                            message:"成功，请等待对方确认"});
                         that.confirmDialogVisible=false;
                         that.chosenUser="";
                         that.dialogVisible=false;
-                        that.$parent.showUser();
-                        that.$parent.getPublishment();
+                        this.$emit("refresh");
+
                     }
                 }).catch(()=>{
                     that.$message({
@@ -96,8 +113,8 @@
 
 
             candidateText(){
-                if(this.publishFormData.aState===6 || this.publishFormData.aState===5){
-                    if(this.publishFormData.aState===6){
+                if(this.publishmentData.aState===6 || this.publishmentData.aState===5){
+                    if(this.publishmentData.aState===6){
                         this.getState="等待对方确认";
                         this.tagType="warning";
                     }else {
@@ -105,20 +122,20 @@
                         this.tagType="success";
                     }
                     return "查看已选定领养人";
-                }else if(this.publishFormData.aState===0){
+                }else if(this.publishmentData.aState===1){
                     this.getState="可申请";
                     this.tagType="";
                     return "查看已申请用户";
                 }else{
                     this.isCandidateDisable=true;
                     this.getState="暂时关闭";
-                    this.tagType="error";
+                    this.tagType="danger";
                     return "该发布已暂时关闭";
                 }
 
             },
             selectImg:function () {
-                if(this.publishmentData.aType=="狗"){
+                if(this.publishmentData.aType==="狗"){
                     return dogPic;
                 }
                 else {
@@ -146,8 +163,8 @@
                                     type: 'success',
                                     message: '延时成功!'
                                 });
-                                that.$parent.showUser();
-                                that.$parent.getPublishment();
+                                that.$emit("refresh");
+
                             }
                             else {
                                 confirm.$message({
@@ -158,8 +175,8 @@
                         })
                         .catch(function (error) {
                             confirm.$message({
-                                type: 'error',
-                                message: '延时失败!'
+                                type: 'warning',
+                                message: 'Networ Error'
                             });
                             console.log(error)
                         })
@@ -212,6 +229,29 @@
                 });
             },
             open3:function(){
+                const that=this;
+                this.$http.post("/userinfo/getCandidates/"+this.publishmentData.aID).then((res)=>{
+                    if(res.data.code===200){
+                        console.log(res.data.data.username);
+                        if(res.data.data.username){
+                            that.getUserBox();
+                        }else{
+                            that.candidateList=res.data.data;
+                            that.dialogVisible=true;
+
+                        }
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch((err)=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                });
 
 
             }
@@ -223,6 +263,7 @@
     #personalContent{
         z-index: 100;
         position: relative;
+        margin-bottom: 1em;
     }
     #personalItem{
         position: relative;
@@ -231,7 +272,7 @@
         margin: 1.6em;
     }
     #personalItem:hover{
-        transform: scale(1.03);
+        transform: scale(1.02);
     }
     #adoptionImg{
         position: absolute;
@@ -244,7 +285,5 @@
         margin-top: 4px;
         font-size: 0.5rem;
     }
-    .choice:hover{
-        transform: scale(1.05);
-    }
+
 </style>
