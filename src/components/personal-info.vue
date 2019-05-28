@@ -9,12 +9,11 @@
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
                 <el-tab-pane label="送养信息" name="second">
-                    <personal-item v-on:listenToChildEvent="refresh" v-if="publishmentList!=[]" v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
+                    <personal-item v-on:listenToChildEvent="refresh"  v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
                 </el-tab-pane>
                 <el-tab-pane label="申请信息" name="first">
-                    <apply-item v-if="applyList!=[]" v-for="(item,index) in applyList" :key="index" :apply-data="item"></apply-item>
+                    <apply-item v-for="(item,index) in applyList" :key="index" :apply-data="item"></apply-item>
                 </el-tab-pane>
-
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
                     <h3 class="tag">密码修改</h3>
@@ -46,6 +45,7 @@
                 </el-tab-pane>
             </el-tabs>
         </el-card>
+
     </div>
 </template>
 
@@ -63,42 +63,9 @@
             this.getApply();
         },
         data(){
-            // var firstCheck=(rule,value,callback)=>{
-            //     if(value==this.modifyForm.prevPassword){
-            //         callback(new Error("新密码应与旧密码不一致"))
-            //     }
-            //     else {
-            //         callback();
-            //     }
-            // };
-            // var secondCheck=(rule,value,callback)=>{
-            //     if(value!=this.modifyForm.newPassword){
-            //         callback(new Error("密码输入不一致"))
-            //     }
-            //     else {
-            //         callback();
-            //     }
-            // };
-            // var check=(rule,value,callback)=>{
-            //     if(value==""){
-            //         callback(new Error("请输入原始密码"))
-            //     }
-            //     else {
-            //         callback();
-            //     }
-            // };
-            // var validatePhone=(rule,value,callback)=>{
-            //     var reg=/^[1][3,4,5,7,8][0-9]{9}$/;
-            //     var phone=this.personalForm.phone;
-            //     if(!reg.test(phone)){
-            //         callback(new Error('手机号格式有误'));
-            //     }else{
-            //         callback();
-            //     }
-            // };
 
             var validateEmail=(rule,value,callback)=>{
-                //to be done
+
                 let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
                 if(!reg.test(value)){
                     callback(new Error('请输入正确的邮箱地址格式'))
@@ -145,41 +112,6 @@
                 this.getPublishment();
                 this.getApply();
             },
-            // personalFormSubmit:function ()  {
-            //     this.$refs["personalForm"].validate((valid)=>{
-            //         if(valid){
-            //             this.modifyPersonalInfo();
-            //         }
-            //         else {
-            //             return false;
-            //         }
-            //     })
-            // },
-            // modifyPersonalInfo:function(){
-            //     const that=this;
-            //     this.$http.post("/userinfo/changePhone",{
-            //         username:that.personalForm.name,
-            //         userTel:that.personalForm.phone
-            //     })
-            //         .then(function (response) {
-            //             if(response.data.code===200){
-            //                 alert("修改成功！");
-            //                 that.showUser();
-            //                 that.getPublishment();
-            //             }
-            //             else {
-            //                 alert("error");
-            //             }
-            //         })
-            //         .catch(function (error) {
-            //             if(error.response){
-            //                 alert(error.response.message)
-            //             }
-            //             else {
-            //                 alert(error.message)
-            //             }
-            //         });
-            // },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {
                     if(valid){

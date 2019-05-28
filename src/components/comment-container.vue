@@ -12,7 +12,7 @@
             </el-card>
         </div>
         <div id="commentList">
-            <comment-info v-for="(item,index) in comments" :comment="item" :key="index" ></comment-info>
+            <comment-info v-for="(item,index) in comments" :comment="item" :key="index" :a-author="aAuthor" ></comment-info>
         </div>
     </div>
 </template>
@@ -22,19 +22,28 @@
     export default {
         name: "comment-container",
         components: {CommentInfo},
+        props:["aAuthor"],
+        computed:{
+            btnTxt(){
+                if(!this.isLogin) return "请先登录";
+                else{
+                    if(this.commentForm.toUser!=="")return "回复 "+this.commentForm.toUser;
+                    else return "发表留言";
+                }
+            }
+        },
         data(){
             return{
                 adoptionId:-1,
                 commentForm:{
                     toUser:"",
                     commentText:"",
-
                 },
                 isComment:false,
-                btnTxt:"发布留言",
+                isLogin:true,
                 rule:{
                     commentText:[
-                        {required:true, message:"请输入"},
+                        {min:1},
                         {max:140,min:1, message:"留言至多140字"}
                     ]
                 },
@@ -50,26 +59,40 @@
             this.showUser();
         },
         methods:{
+            changeToUser(user){
+                this.commentForm.toUser=user;
+                //console.log(user);
+            },
             showUser(){
                 const that=this;
                 this.$http.get("/userinfo/info")
                     .then(function (response) {
                         if(response.data.code!==200){
                             that.isComment=true;
-                            that.btnTxt="请先登录";
+                            that.isLogin=false;
                         }
                     })
                     .catch(function () {
                         that.isComment=true;
-                        that.btnTxt="请先登录";
+                        that.isLogin=false;
                     })
             },
             getComments(){
                 const that=this;
                 this.$http.get("/comment/get/"+this.adoptionId).then((res)=>{
-
-                }).catch((err)=>{
-
+                    if(res.data.code===200){
+                        that.comments=res.data.data;
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
                 })
 
             },
@@ -77,12 +100,27 @@
                 const that=this;
                 this.$http.post("/comment/publish",{
                     aID:this.adoptionId,    //int
-                    toUsername:this.toUser,     //string username
-                    commentText:this.commentText //string
+                    toUsername:this.commentForm.toUser,     //string username
+                    commentText:this.commentForm.commentText //string
                 }).then((res)=>{
-
-                }).catch((err)=>{
-
+                    if(res.data.code===200){
+                        that.$message("留言成功");
+                        that.getComments();
+                    }
+                    else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        });
+                        if(res.data.code===401){
+                            that.$router.push("/login");
+                        }
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
                 })
             }
         }
