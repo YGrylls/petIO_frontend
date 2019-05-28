@@ -5,8 +5,8 @@
                 <el-row>
                     <el-col :span="16"><h2 class="content">{{adoptionDetailInfo.adoptionTitle}}</h2></el-col>
                     <el-col :span="4" :offset="4">
-                        <el-button type="text" v-if="adoptionDetailInfo.adoptionStatus==0" class="AdoptionBtn">未领养</el-button>
-                        <el-button type="text" v-else class="AdoptionBtn">未领养</el-button>
+                        <!--<el-button type="text" v-if="adoptionDetailInfo.adoptionStatus==0" class="AdoptionBtn">未领养</el-button>-->
+                        <!--<el-button type="text" v-else class="AdoptionBtn">未领养</el-button>-->
                     </el-col>
                 </el-row>
                 <el-row id="locate">
@@ -29,25 +29,15 @@
                         <p v-if="adoptionDetailInfo.free==true">金额：<strong>￥0</strong></p>
                         <p v-else>金额：<strong>￥{{adoptionDetailInfo.cost}}</strong></p>
                     </el-col>
-                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">申请领养</el-button></el-col>
+                    <el-col :span="12" class="AdoptionBtn"><el-button type="primary" @click="ensureApply">联系方式</el-button></el-col>
                 </el-row>
-                <!--<strong><p class="content">宠物相册</p></strong>-->
-                <!--<viewer :images="adoptionDetailInfo.adoptionImg">-->
-                    <!--<img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :src="src" :key="src">-->
-                <!--</viewer>-->
-                <!--<el-carousel ref="DetailPhoto" :interval="4000" :type="imgType" >-->
-                    <!--<el-carousel-item v-for="item in adoptionDetailInfo.adoptionImg" :key="item.id">-->
-                        <!--&lt;!&ndash;<h3>{{ item }}</h3>&ndash;&gt;-->
-                        <!--<img class="adoptionDetailPhoto" v-bind:src="item" />-->
-                    <!--</el-carousel-item>-->
-                <!--</el-carousel>-->
                 <strong><p class="content">领养要求</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailRequirement}}</p>
                 <strong><p class="content">宠物照片</p></strong>
                 <viewer :images="adoptionDetailInfo.adoptionImg">
                     <img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >
                 </viewer>
-                <strong><p class="content">宠物简介</p></strong>
+                <strong><p class="content">宠物描述</p></strong>
                 <p class="content">{{adoptionDetailInfo.adoptionDetailAbstract}}</p>
                 <strong><p class="content">留言区</p></strong>
                 <comment-container :a-author="adoptionDetailInfo.editor" ref="comments" class="comment"></comment-container>
@@ -56,13 +46,6 @@
             <el-card id="adoption-detail-aside">
                 <h2>发布人信息</h2>
                 <p>To be done</p>
-                <!--<viewer :images="adoptionDetailInfo.adoptionImg">-->
-                    <!--<img class="adoptionDetailPhoto" v-for="src in adoptionDetailInfo.adoptionImg" :key="src"  :src="src" >-->
-                <!--</viewer>-->
-                <!--<el-row>-->
-                    <!--<el-col :span="8"><p>领养推荐</p></el-col>-->
-                    <!--<el-col :span="4" :offset="12"><el-button type="text">更多</el-button></el-col>-->
-                <!--</el-row>-->
             </el-card>
         </el-container>
         <apply-box ref="applyBox"></apply-box>
@@ -109,7 +92,7 @@
         methods:{
             ensureApply() {
                 const that=this;
-                this.$confirm('此操作将申请领养该宠物, 是否继续?', '提示', {
+                this.$confirm('您一天至多可以申请三个送养发布信息的联系方式, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
