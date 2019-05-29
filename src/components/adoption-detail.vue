@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-bottom: 2em">
+    <div v-loading.fullscreen.lock="fullscreenLoading" style="margin-bottom: 2em">
         <el-container>
             <el-card id="adoption-detail-card">
                 <el-row>
@@ -60,13 +60,14 @@
         name: "adoption-detail",
         components: {UserInfoBox, CommentContainer, ApplyBox},
         created(){
-            this.getData();
+
         },
         data(){
             return{
                 userBoxInfo:{
 
                 },
+                fullscreenLoading:false,
                 tagType:"",
                 tagText:"可申请",
                 isApplyDisable:false,
@@ -176,7 +177,7 @@
                                 if(that.adoptionDetailInfo.adoptionStatus===4){
                                     that.tagType="danger";
                                     that.tagText="已关闭";
-                                }else if(this.adoptionDetailInfo.adoptionStatus===5){
+                                }else if(that.adoptionDetailInfo.adoptionStatus===5){
                                     that.tagType="warning";
                                     that.tagText="已完成";
                                 }else if(that.adoptionDetailInfo.adoptionStatus===6){
@@ -185,17 +186,21 @@
                                 }
 
                             }
+
                         }
+                        that.fullscreenLoading=false;
                     })
                     .catch(function (error) {
-                        alert(error);
+                        console.log(error);
+                        that.fullscreenLoading=false;
                     });
 
             }
         },
         mounted(){
             const that=this;
-
+            this.fullscreenLoading=true;
+            this.getData();
 
 
             window.onresize=()=>{

@@ -1,5 +1,5 @@
 <template>
-    <div id="container">
+    <div v-loading.fullscreen.lock="fullscreenLoading" id="container">
         <el-card id="showInfo">
             <h1>{{personalForm.name}}</h1>
             <hr>
@@ -33,18 +33,6 @@
                     <hr/>
                     <h3 class="tag">密码修改</h3>
                     <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-position="top" style="text-align: left">
-                        <!--<el-form-item label="旧密码" prop="prevPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.prevPassword" show-password placeholder="请输入旧密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="新密码" prop="newPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.newPassword" show-password placeholder="请输入新密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="确认密码" prop="confirmPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.confirmPassword" show-password placeholder="请确认新密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item>-->
-                            <!--<el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>-->
-                        <!--</el-form-item>-->
                         <el-form-item label="注册时使用的邮箱" prop="emailAddress">
                             <el-input v-model="modifyForm.emailAddress"></el-input>
                         </el-form-item>
@@ -65,20 +53,13 @@
 </template>
 
 <script>
-    import catPic from '../assets/cat.png';
-    import dogPic from '../assets/dog.png';
     import personalItem from './personal-item'
     import applyItem from './apply-item'
     export default {
         name: "personal-info",
         components:{personalItem,applyItem},
-        created(){
-            this.showUser();
-            this.getPublishment();
-            this.getApply();
-            this.getChosen();
-            this.getOtherComment();
-            this.getOtherApply();
+        mounted(){
+            this.refresh();
         },
         data(){
 
@@ -92,6 +73,7 @@
                 }
             };
             return{
+                fullscreenLoading:false,
                 OtherCommentList:[],
                 OtherApplyList:[],
                 OtherCommentNum:0,
@@ -174,10 +156,13 @@
                 })
             },
             refresh:function(){
+                this.fullscreenLoading=true;
                 this.showUser();
                 this.getPublishment();
                 this.getApply();
                 this.getChosen();
+                this.getOtherComment();
+                this.getOtherApply();
             },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {
@@ -274,6 +259,7 @@
                         else if(response.data.code===200){
                             that.applyList=response.data.data;
                         }
+                        that.fullscreenLoading=false;
                     })
                     .catch(function (error) {
                         if(error.response){
@@ -282,6 +268,7 @@
                         else {
                             alert(error.message);
                         }
+                        that.fullscreenLoading=false;
                     })
             },
             getValidationCode:function(){
