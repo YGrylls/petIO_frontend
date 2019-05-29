@@ -56,16 +56,18 @@
                     });
                 this.$http.get("/apply/unread")
                     .then(function (response) {
+                        that.loginStatus=response.data.code;
                         if(that.loginStatus===200){
                             that.applyUnread=response.data.data.number;
                         }
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(function (error) {
                         console.log(error);
-                    })
+                    });
                 this.$http.get("/userinfo/info")
                     .then(function (response) {
+                        that.loginStatus=response.data.code;
                         if(that.loginStatus===200){
                             that.userName=response.data.data.username;
                         }

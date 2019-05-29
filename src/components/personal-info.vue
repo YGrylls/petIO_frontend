@@ -5,8 +5,21 @@
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
             <p class="tag"><span>邮箱：</span><strong>{{personalForm.email}}</strong></p>
-            <el-alert title="不可关闭的 alert" type="success" :closable="false">
-            </el-alert>
+            <el-collapse>
+                <el-collapse-item title="评论信息" name="1">
+                    <div v-for="item in OtherCommentList" :key="item.key">
+                        <el-alert title="item.username" type="success" :closable="false">
+                        </el-alert>
+                    </div>
+                </el-collapse-item>
+                <el-collapse-item title="申请信息" name="2">
+                    <div v-for="item in OtherApplyList" :key="item.key">
+                        <el-alert class="info" :title="item.username+'申请您的领养请求'" type="success" :closable="false">
+                        </el-alert>
+
+                    </div>
+                </el-collapse-item>
+            </el-collapse>
         </el-card>
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
@@ -20,18 +33,6 @@
                     <hr/>
                     <h3 class="tag">密码修改</h3>
                     <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-position="top" style="text-align: left">
-                        <!--<el-form-item label="旧密码" prop="prevPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.prevPassword" show-password placeholder="请输入旧密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="新密码" prop="newPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.newPassword" show-password placeholder="请输入新密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="确认密码" prop="confirmPassword">-->
-                            <!--<el-input :minlength="8" :maxlength="16" v-model="modifyForm.confirmPassword" show-password placeholder="请确认新密码"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item>-->
-                            <!--<el-button size="mini" type="primary" @click="modifyFormSubmit">确认修改</el-button>-->
-                        <!--</el-form-item>-->
                         <el-form-item label="注册时使用的邮箱" prop="emailAddress">
                             <el-input v-model="modifyForm.emailAddress"></el-input>
                         </el-form-item>
@@ -52,8 +53,6 @@
 </template>
 
 <script>
-    import catPic from '../assets/cat.png';
-    import dogPic from '../assets/dog.png';
     import personalItem from './personal-item'
     import applyItem from './apply-item'
     export default {
@@ -75,6 +74,10 @@
             };
             return{
                 fullscreenLoading:false,
+                OtherCommentList:[],
+                OtherApplyList:[],
+                OtherCommentNum:0,
+                OtherApplyNum:0,
                 activeName:'second',
                 personalForm: {
                     name: '',
@@ -109,6 +112,31 @@
             }
         },
         methods:{
+            getOtherComment(){
+                const that=this;
+                this.$http.get("/comment/unread")
+                    .then(function (response) {
+
+                        that.OtherCommentNum=response.data.data.number;
+                        that.OtherCommentList=response.data.data.list;
+                        console.log(that.OtherCommentList);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            getOtherApply(){
+                const that=this;
+                this.$http.get("/apply/unread")
+                    .then(function (response) {
+                        that.OtherApplyNum=response.data.data.number;
+                        that.OtherApplyList=response.data.data.list;
+                        console.log(that.OtherApplyList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
             getChosen(){
                 const that=this;
                 this.$http.get("/userinfo/AfterFirst").then((res)=>{
@@ -133,6 +161,8 @@
                 this.getPublishment();
                 this.getApply();
                 this.getChosen();
+                this.getOtherComment();
+                this.getOtherApply();
             },
             modifyFormSubmit:function () {
                 this.$refs["modifyForm"].validate((valid) => {
@@ -296,5 +326,8 @@
     }
     .tag{
         text-align: left;
+    }
+    .info{
+        margin-bottom: 4px;
     }
 </style>
