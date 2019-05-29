@@ -13,7 +13,6 @@
             </div>
             <el-button class="choice" size="mini" type="primary" icon="el-icon-circle-plus" @click="open1">查看联系方式</el-button>
             <el-button v-if="isCheckAvailable()" class="choice" size="mini"  icon="el-icon-check" @click="open2">确认领养并完成</el-button>
-            <img id="adoptionImg" :src="selectImg()">
         </el-card>
         <apply-box ref="applyBox"></apply-box>
         <el-dialog title="确认完成领养" :visible.sync="confirmDialogVisible" width="40%">

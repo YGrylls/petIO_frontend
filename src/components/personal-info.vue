@@ -8,13 +8,15 @@
             <el-collapse>
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">
-                        <el-alert
-                                class="info"
-                                :title="item.username+'给您评论了'"
-                                :description="'标题：'+item.aTitle"
-                                type="success"
-                                :closable="false">
-                        </el-alert>
+                        <div @click="gotoDetail(item.aID)">
+                            <el-alert
+                                    class="info"
+                                    :title="item.username+'给您评论了'"
+                                    :description="'标题：'+item.aTitle"
+                                    type="success"
+                                    :closable="false">
+                            </el-alert>
+                        </div>
                     </div>
                 </el-collapse-item>
                 <el-collapse-item title="您的申请" name="2">
@@ -122,6 +124,10 @@
             }
         },
         methods:{
+            gotoDetail(id){
+                this.$router.push("/adoption/detail/"+id);
+                // console.log(id);
+            },
             getOtherComment(){
                 const that=this;
                 this.$http.get("/comment/unread")
@@ -339,5 +345,10 @@
     }
     .info{
         margin-bottom: 4px;
+        transform: scale(1.05);
     }
+
+    /*#commentList :hover{*/
+        /*transform: scale(1.05);*/
+    /*}*/
 </style>

@@ -13,7 +13,6 @@
             <el-button class="choice" size="mini" type="primary" icon="el-icon-circle-plus" @click="open1">延时</el-button>
             <el-button class="choice" size="mini" type="danger" icon="el-icon-delete" @click="open2">删除</el-button>
             <el-button class="choice" size="mini" :disabled="isCandidateDisable"  icon="el-icon-check" @click="open3">{{candidateText()}}</el-button>
-            <img id="adoptionImg" :src="selectImg()">
         </el-card>
         <el-dialog title="在该发布下申请过您联系方式的用户" :visible.sync="dialogVisible" width="620px">
             <div id="candidateList" style="text-align: left">
