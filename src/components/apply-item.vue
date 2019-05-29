@@ -159,6 +159,7 @@
     #personalContent{
         z-index: 100;
         position: relative;
+        width:60%;
         margin-bottom: 1em;
     }
     #personalItem{

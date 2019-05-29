@@ -263,6 +263,7 @@
 <style scoped>
     #personalContent{
         z-index: 100;
+        width:60%;
         position: relative;
         margin-bottom: 1em;
     }

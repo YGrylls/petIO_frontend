@@ -8,25 +8,26 @@
             <el-collapse>
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">
-                        <el-alert
-                                class="info"
-                                :title="item.username+'给您评论了'"
-                                :description="'标题：'+item.aTitle"
-                                type="success"
-                                :closable="false">
-                        </el-alert>
+                            <el-alert style="text-align: left"
+                                    class="info"
+                                    :center="false"
+                                    :title="item.username+'给您评论了'"
+                                    :description="'标题：'+item.aTitle"
+                                    type="success"
+                                    :closable="false">
+                            </el-alert>
                     </div>
                 </el-collapse-item>
                 <el-collapse-item title="您的申请" name="2">
                     <div v-for="item in OtherApplyList" :key="item.key">
-                        <el-alert
-                                class="info"
-                                :title="item.username+'申请您的领养'"
-                                :description="'标题：'+item.aTitle"
-                                type="success"
-                                :closable="false">
-                        </el-alert>
-
+                            <el-alert style="text-align: left"
+                                    class="info"
+                                    :center="false"
+                                    :title="item.username+'申请您的领养'"
+                                    :description="'标题：'+item.aTitle"
+                                    type="success"
+                                    :closable="false">
+                            </el-alert>
                     </div>
                 </el-collapse-item>
             </el-collapse>
