@@ -5,8 +5,21 @@
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
             <p class="tag"><span>邮箱：</span><strong>{{personalForm.email}}</strong></p>
-            <el-alert title="不可关闭的 alert" type="success" :closable="false">
-            </el-alert>
+            <el-collapse>
+                <el-collapse-item title="评论信息" name="1">
+                    <div v-for="item in OtherCommentList" :key="item.key">
+                        <el-alert title="item.username" type="success" :closable="false">
+                        </el-alert>
+                    </div>
+                </el-collapse-item>
+                <el-collapse-item title="申请信息" name="2">
+                    <div v-for="item in OtherApplyList" :key="item.key">
+                        <el-alert class="info" :title="item.username+'申请您的领养请求'" type="success" :closable="false">
+                        </el-alert>
+
+                    </div>
+                </el-collapse-item>
+            </el-collapse>
         </el-card>
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
@@ -64,6 +77,8 @@
             this.getPublishment();
             this.getApply();
             this.getChosen();
+            this.getOtherComment();
+            this.getOtherApply();
         },
         data(){
 
@@ -77,6 +92,10 @@
                 }
             };
             return{
+                OtherCommentList:[],
+                OtherApplyList:[],
+                OtherCommentNum:0,
+                OtherApplyNum:0,
                 activeName:'second',
                 personalForm: {
                     name: '',
@@ -111,6 +130,31 @@
             }
         },
         methods:{
+            getOtherComment(){
+                const that=this;
+                this.$http.get("/comment/unread")
+                    .then(function (response) {
+
+                        that.OtherCommentNum=response.data.data.number;
+                        that.OtherCommentList=response.data.data.list;
+                        console.log(that.OtherCommentList);
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+            getOtherApply(){
+                const that=this;
+                this.$http.get("/apply/unread")
+                    .then(function (response) {
+                        that.OtherApplyNum=response.data.data.number;
+                        that.OtherApplyList=response.data.data.list;
+                        console.log(that.OtherApplyList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
             getChosen(){
                 const that=this;
                 this.$http.get("/userinfo/AfterFirst").then((res)=>{
@@ -295,5 +339,8 @@
     }
     .tag{
         text-align: left;
+    }
+    .info{
+        margin-bottom: 4px;
     }
 </style>
