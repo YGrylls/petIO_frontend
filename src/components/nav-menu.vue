@@ -8,17 +8,17 @@
         <!--<el-menu-item index="1" @click="gotoPersonal">个人中心</el-menu-item>-->
         <el-menu-item index="2" @click="gotoAdoptionList">领养</el-menu-item>
         <el-menu-item index="3" @click="gotoAdoptionPublish">送养</el-menu-item>
-        <el-menu-item v-if="loginStatus==400" index="1" id="personal" @click="gotoPersonal">登录</el-menu-item>
-        <el-submenu v-else index="1" id="personal">
-            <template slot="title">个人中心</template>
+        <el-menu-item v-if="loginStatus==400" index="1" class="personal" @click="gotoPersonal">登录</el-menu-item>
+        <el-submenu v-if="loginStatus==200" index="1" class="personal">
+            <template slot="title">你好！{{userName}}</template>
             <el-menu-item index="1-1" @click="gotoPersonal">
                 评论
-                <el-badge :value="commentUnread" :max="99" class="item">
+                <el-badge v-if="commentUnread!=0" :value="commentUnread" :max="99" class="item">
                 </el-badge>
             </el-menu-item>
             <el-menu-item index="1-2" @click="gotoPersonal">
                 申请
-                <el-badge :value="applyUnread" :max="99" class="item">
+                <el-badge v-if="applyUnread!=0" :value="applyUnread" :max="99" class="item">
                 </el-badge>
             </el-menu-item>
         </el-submenu>
@@ -33,7 +33,8 @@
                 activeIndex1:'',
                 loginStatus:0,
                 applyUnread:0,
-                commentUnread:0
+                commentUnread:0,
+                userName:''
             }
         },
         created(){
@@ -55,10 +56,20 @@
                     });
                 this.$http.get("/apply/unread")
                     .then(function (response) {
-                        if(that.loginStatus==200){
+                        if(that.loginStatus===200){
                             that.applyUnread=response.data.data.number;
                         }
                         console.log(response)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                this.$http.get("/userinfo/info")
+                    .then(function (response) {
+                        if(that.loginStatus===200){
+                            that.userName=response.data.data.username;
+                        }
+                        // console.log(response)
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -80,7 +91,13 @@
                 //TO BE DONE
             },
             gotoPersonal(){
-                this.$router.push("/adoption/personal")
+                if(this.loginStatus===400){
+                    this.$router.push("/login");
+                }
+                else {
+                    this.$router.push("/adoption/personal")
+                }
+
             },
             gotoAdoptionList(){
                 this.$router.push("/adoption/list")
@@ -100,7 +117,7 @@
         margin-left:3em;
         margin-right: 1em;
     }
-    #personal{
+    .personal{
         float: right;
         margin-right: 5em;
     }

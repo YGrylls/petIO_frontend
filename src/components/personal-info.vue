@@ -5,6 +5,8 @@
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
             <p class="tag"><span>邮箱：</span><strong>{{personalForm.email}}</strong></p>
+            <el-alert title="不可关闭的 alert" type="success" :closable="false">
+            </el-alert>
         </el-card>
         <el-card id="modifyInfo">
             <el-tabs v-model="activeName">
