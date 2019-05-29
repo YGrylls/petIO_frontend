@@ -8,7 +8,7 @@
             <el-collapse>
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">
-                        <el-alert title="item.username" type="success" :closable="false">
+                        <el-alert class="info" :title="item.username" type="success" :closable="false">
                         </el-alert>
                     </div>
                 </el-collapse-item>
