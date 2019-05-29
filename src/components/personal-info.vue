@@ -1,5 +1,5 @@
 <template>
-    <div id="container">
+    <div v-loading.fullscreen.lock="fullscreenLoading" id="container">
         <el-card id="showInfo">
             <h1>{{personalForm.name}}</h1>
             <hr>
@@ -59,11 +59,8 @@
     export default {
         name: "personal-info",
         components:{personalItem,applyItem},
-        created(){
-            this.showUser();
-            this.getPublishment();
-            this.getApply();
-            this.getChosen();
+        mounted(){
+            this.refresh();
         },
         data(){
 
@@ -77,6 +74,7 @@
                 }
             };
             return{
+                fullscreenLoading:false,
                 activeName:'second',
                 personalForm: {
                     name: '',
@@ -130,6 +128,7 @@
                 })
             },
             refresh:function(){
+                this.fullscreenLoading=true;
                 this.showUser();
                 this.getPublishment();
                 this.getApply();
@@ -230,6 +229,7 @@
                         else if(response.data.code===200){
                             that.applyList=response.data.data;
                         }
+                        that.fullscreenLoading=false;
                     })
                     .catch(function (error) {
                         if(error.response){
@@ -238,6 +238,7 @@
                         else {
                             alert(error.message);
                         }
+                        that.fullscreenLoading=false;
                     })
             },
             getValidationCode:function(){
