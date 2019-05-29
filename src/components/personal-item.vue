@@ -83,7 +83,7 @@
 
             },
             getUserBox(){
-                this.checkUSer(this.chosenUser);
+                this.checkUser(this.chosenUser);
                 this.userDialogVisible=true;
             },
             chooseSelectedUser(){
@@ -247,6 +247,7 @@
                         })
                     }
                 }).catch((err)=>{
+                    console.log(err);
                     that.$message({
                         type:"warning",
                         message:"Network Error"

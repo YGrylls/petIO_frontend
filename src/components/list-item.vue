@@ -1,9 +1,10 @@
 <template>
     <el-card ref="itemCard" id="cardContainer">
         <div @click="viewDetail" id="content">
-            <h3>{{adoptionData.aTitle}}</h3>
+
             <div style="display: flex">
                 <div style="width: 45%">
+                    <h3>{{adoptionData.aTitle}}</h3>
                     <p>{{adoptionData.editor}} 送养的 {{adoptionData.aType}}</p>
                     <p><i class="el-icon-location"></i> {{adoptionData.location}}  <i class="el-icon-date"></i> {{adoptionData.publishDate}}</p>
                     <p>{{testShow}}</p>
@@ -73,13 +74,15 @@
     }
     .adoptionPhoto{
         margin: 0.5em;
-        width: 120px;
-        height:120px;
+        margin-top: 2em;
+        margin-left: 4em;
+        width: 150px;
+        height:150px;
         object-fit: cover;
         border: gray;
         border-width: 1px;
         border-style: solid;
-        border-radius: 0.2em;
+        border-radius: 0.5em;
         transition: 0.5s;
     }
     .adoptionPhoto:hover{

@@ -30,11 +30,13 @@
     import catPic from '../assets/cat.png';
     import dogPic from '../assets/dog.png';
     import applyBox from './apply-box';
+    import confirmInfo from './comfirm-info';
     export default {
         name: "apply-item",
         props:["publishmentData","chosenList"],
         components:{
-            applyBox
+            applyBox,
+            confirmInfo
         },
         computed:{
 
@@ -44,7 +46,8 @@
                 getState:"开放申请",
                 tagType:"",
                 ifChosen:false,
-                confirmDialogVisible:false
+                confirmDialogVisible:false,
+                chosenUser:"送养方",
             }
         },
         methods:{
@@ -63,14 +66,14 @@
                 const that=this;
                 this.$http.post("/userinfo/secondHandShake",{
                     aID:this.publishmentData.aID,
-                    username:this.chosenUser
+                    agree:true
                 }).then((res)=>{
                     if(res.data.code===200){
                         that.$message({
                             type:"success",
                             message:"成功，领养确认已完成，请照顾好您的新宠物"});
                         that.confirmDialogVisible=false;
-                        that.chosenUser="";
+                        // that.chosenUser="";
                         that.dialogVisible=false;
                         this.$emit("refresh");
 
@@ -122,7 +125,7 @@
             },
             open2(){
                 //to be done
-
+                this.confirmDialogVisible=true;
             },
             open1(){
                 const url='/adoption/apply/'+this.publishmentData.aID;
