@@ -8,8 +8,8 @@
         <!--<el-menu-item index="1" @click="gotoPersonal">个人中心</el-menu-item>-->
         <el-menu-item index="2" @click="gotoAdoptionList">领养</el-menu-item>
         <el-menu-item index="3" @click="gotoAdoptionPublish">送养</el-menu-item>
-        <el-menu-item v-if="loginStatus==400" index="1" class="personal" @click="gotoPersonal">登录</el-menu-item>
-        <el-submenu v-if="loginStatus==200" index="1" class="personal">
+        <el-menu-item v-if="loginStatus!==200" index="1" class="personal" @click="gotoPersonal">登录</el-menu-item>
+        <el-submenu v-if="loginStatus===200" index="1" class="personal">
             <template slot="title">你好！{{userName}}</template>
             <el-menu-item index="1-1" @click="gotoPersonal">
                 评论
