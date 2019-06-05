@@ -94,7 +94,6 @@
                 activeName:'second',
                 personalForm: {
                     name: '',
-                    email: '',
                 },
                 modifyForm:{
                     emailAddress:'',
@@ -233,7 +232,7 @@
                         else {
                             console.log(response.data.data);
                             that.personalForm.name=response.data.data.username;
-                            that.personalForm.email=response.data.data.userMail;
+                            // that.personalForm.email=response.data.data.userMail;
                         }
                     })
                     .catch(function (error) {
