@@ -4,7 +4,6 @@
             <h1>{{personalForm.name}}</h1>
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
-            <p class="tag"><span>邮箱：</span><strong>{{personalForm.email}}</strong></p>
             <el-collapse>
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">

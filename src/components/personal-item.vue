@@ -22,7 +22,7 @@
                 <div v-for="(item, index) in candidateList" :key="index">
                     <h3>{{item.username}} <span style="float: right">
                             <el-button-group>
-                                <el-button type="primary" size="mini" icon="el-icon-search" @click="checkUser(item.username)">查看用户</el-button>
+                                <el-button type="primary" size="mini" icon="el-icon-search" @click="getUserBox(item.userID)">查看用户</el-button>
                                 <el-button type="primary" size="mini"  @click="chooseUser(item.username)">确认选择<i class="el-icon-check el-icon--right"></i></el-button>
                             </el-button-group>
                         </span></h3>
@@ -58,7 +58,11 @@
         data(){
             return{
                 userBoxInfo:{
+                    uid:-1,
                     username:"",
+                    adoptionNum:0,
+                    completeAdoptionNum:0,
+                    completeApplyNum:0
                 },
                 isCandidateDisable:false,
                 dialogVisible:false,
@@ -72,17 +76,33 @@
         },
 
         methods:{
-            checkUser(username){
+            checkUser(uid){
                 //axios to get userinfo
                 //show user info box
+                const that=this;
+                this.$http.post("/userbox/"+uid).then((res)=>{
+                    if(res.data.code===200){
+                        that.userBoxInfo=res.data.data;
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
             },
             chooseUser(username){
                 this.chosenUser=username;
                 this.confirmDialogVisible=true;
 
             },
-            getUserBox(){
-                this.checkUser(this.chosenUser);
+            getUserBox(uid){
+                this.checkUser(uid);
                 this.userDialogVisible=true;
             },
             chooseSelectedUser(){
@@ -233,7 +253,7 @@
                     if(res.data.code===200){
                         console.log(res.data.data.username);
                         if(res.data.data.username){
-                            that.getUserBox();
+                            that.getUserBox(res.data.data.userID);
                         }else{
                             that.candidateList=res.data.data;
                             that.dialogVisible=true;

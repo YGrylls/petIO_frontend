@@ -1,6 +1,9 @@
 <template>
     <div id="container">
-        <h3>To Be Done</h3>
+        <h1 style="font-size: 3em">{{userBoxInfo.username}}</h1>
+        <h4>发布过的送养发布: <span style="color: #409EFF">{{userBoxInfo.adoptionNum}}</span></h4>
+        <h4>已完成的送养发布: <span style="color: #409EFF">{{userBoxInfo.completeAdoptionNum}}</span></h4>
+        <h4>已完成的领养申请: <span style="color: #409EFF">{{userBoxInfo.completeApplyNum}}</span></h4>
     </div>
     
 </template>

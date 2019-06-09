@@ -45,6 +45,7 @@
 
             </el-card>
             <el-card id="adoption-detail-aside">
+                <h4 style="text-align: left;margin-left: 2em">发布人：</h4>
                 <user-info-box :user-box-info="userBoxInfo"></user-info-box>
             </el-card>
         </el-container>
@@ -65,7 +66,11 @@
         data(){
             return{
                 userBoxInfo:{
-
+                    uid:-1,
+                    username:"",
+                    adoptionNum:0,
+                    completeAdoptionNum:0,
+                    completeApplyNum:0
                 },
                 fullscreenLoading:false,
                 tagType:"",
@@ -189,14 +194,37 @@
 
                         }
                         that.fullscreenLoading=false;
+                        that.checkUser(response.data.data.editor);
                     })
                     .catch(function (error) {
                         console.log(error);
                         that.fullscreenLoading=false;
                     });
 
+            },
+            checkUser(uid){
+                //axios to get userinfo
+                //show user info box
+                console.log("check");
+                const that=this;
+                this.$http.post("/userbox/"+uid).then((res)=>{
+                    if(res.data.code===200){
+                        that.userBoxInfo=res.data.data;
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
             }
         },
+
         mounted(){
             const that=this;
             this.fullscreenLoading=true;
@@ -234,7 +262,7 @@
         margin:0.5em;
     }
     #adoption-detail-aside{
-
+        height: 500px;
         margin-left: 2%;
         width:25%;
         margin-top: 20px;
