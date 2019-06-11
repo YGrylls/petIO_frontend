@@ -4,17 +4,18 @@
             <h1>{{personalForm.name}}</h1>
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
-            <el-collapse>
+            <el-collapse v-model="activecollapse">
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">
-                        <div @click="gotoDetail(item.aID)">
+                        <div>
                             <el-alert style="text-align: left"
                                     class="info"
                                     :center="false"
                                     :title="item.username+'给您评论了'"
                                     :description="'标题：'+item.aTitle"
                                     type="success"
-                                    :closable="false">
+                                    close-text="详情"
+                                    @close="gotoDetail_setRead(item.aID,item.uID)">
                             </el-alert>
                         </div>
                     </div>
@@ -27,7 +28,8 @@
                                     :title="item.username+'申请您的领养'"
                                     :description="'标题：'+item.aTitle"
                                     type="success"
-                                    :closable="false">
+                                      close-text="详情"
+                                     @close="setApplyRead(item.aID,item.uID)">
                             </el-alert>
                     </div>
                 </el-collapse-item>
@@ -85,6 +87,7 @@
                 }
             };
             return{
+                activecollapse:["1","2"],
                 fullscreenLoading:false,
                 OtherCommentList:[],
                 OtherApplyList:[],
@@ -127,11 +130,28 @@
                 this.$router.push("/adoption/detail/"+id);
                 // console.log(id);
             },
+            gotoDetail_setRead(aid,uid){
+                const that=this;
+                var url='comment/read/'+uid;
+                console.log(url);
+                this.$http.post(url)
+                    .then(function (response) {
+                        if(response.data.code===200){
+                            that.$router.push("/adoption/detail/"+aid);
+                        }
+                        else {
+                            console.log(response);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
             getOtherComment(){
                 const that=this;
                 this.$http.get("/comment/unread")
                     .then(function (response) {
-
+                        console.log("comment:",response)
                         that.OtherCommentNum=response.data.data.number;
                         that.OtherCommentList=response.data.data.list;
                         console.log(that.OtherCommentList);
@@ -142,11 +162,26 @@
             },
             getOtherApply(){
                 const that=this;
-                this.$http.get("/apply/unread")
+                this.$http.get("/apply/ownerunread")
                     .then(function (response) {
+                        console.log(response);
                         that.OtherApplyNum=response.data.data.number;
                         that.OtherApplyList=response.data.data.list;
                         console.log(that.OtherApplyList)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            setApplyRead(id,uid){
+                const that=this;
+                var url='/apply/ownerread/'+id+'/'+uid;
+                console.log(url);
+                this.$http.post(url)
+                    .then(function (response) {
+                        if(response.data.code===200){
+                            that.$router.push("/adoption/detail/"+id);
+                        }
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -342,7 +377,7 @@
     .tag{
         text-align: left;
     }
-    .info{
+    .info:hover{
         margin-bottom: 4px;
         transform: scale(1.05);
     }

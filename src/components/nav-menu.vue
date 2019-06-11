@@ -54,7 +54,7 @@
                     .catch(function (error) {
                         console.log(error)
                     });
-                this.$http.get("/apply/unread")
+                this.$http.get("/apply/ownerunread")
                     .then(function (response) {
                         that.loginStatus=response.data.code;
                         if(that.loginStatus===200){
