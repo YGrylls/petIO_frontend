@@ -105,6 +105,8 @@
                 }).then((res)=>{
                     if(res.data.code===200){
                         that.$message("留言成功");
+                        that.commentForm.toUser="";
+                        that.commentForm.commentText="";
                         that.getComments();
                     }
                     else{

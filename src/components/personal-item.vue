@@ -10,7 +10,7 @@
                     <el-col align="left"><i class="el-icon-time">关闭时间：{{publishmentData.expireDate}}</i></el-col>
                 </el-row>
             </div>
-            <el-button class="choice" size="mini" type="primary" icon="el-icon-circle-plus" @click="open1">延时</el-button>
+            <el-button class="choice" size="mini" type="primary" icon="el-icon-circle-plus" @click="open1" :disabled="publishmentData.aState>4">延时</el-button>
             <el-button class="choice" size="mini" type="danger" icon="el-icon-delete" @click="open2">删除</el-button>
             <el-button class="choice" size="mini" :disabled="isCandidateDisable"  icon="el-icon-check" @click="open3">{{candidateText()}}</el-button>
         </el-card>

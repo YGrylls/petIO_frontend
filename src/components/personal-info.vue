@@ -28,7 +28,7 @@
                                     :title="item.username+'申请您的领养'"
                                     :description="'标题：'+item.aTitle"
                                     type="success"
-                                      close-text="详情"
+                                      close-text="知道了"
                                      @close="setApplyRead(item.aID,item.uID)">
                             </el-alert>
                     </div>
@@ -180,7 +180,7 @@
                 this.$http.post(url)
                     .then(function (response) {
                         if(response.data.code===200){
-                            that.$router.push("/adoption/detail/"+id);
+                            //that.$router.push("/adoption/detail/"+id);
                         }
                     })
                     .catch(function (error) {
@@ -377,9 +377,11 @@
     .tag{
         text-align: left;
     }
+    .info{
+        margin-bottom: 0.5em;
+    }
     .info:hover{
-        margin-bottom: 4px;
-        transform: scale(1.05);
+        font-weight: bolder;
     }
 
     /*#commentList :hover{*/
