@@ -28,12 +28,11 @@
 <script>
     export default {
         name: "nav-menu",
+        props:['applyUnread','commentUnread'],
         data(){
             return{
                 activeIndex1:'',
                 loginStatus:0,
-                applyUnread:0,
-                commentUnread:0,
                 userName:''
             }
         },
@@ -44,27 +43,7 @@
         methods:{
             getUnread(){
                 const that=this;
-                this.$http.get("/comment/unread")
-                    .then(function (response) {
-                        that.loginStatus=response.data.code;
-                        if(that.loginStatus===200) {
-                            that.commentUnread = response.data.data.number;
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error)
-                    });
-                this.$http.get("/apply/ownerunread")
-                    .then(function (response) {
-                        that.loginStatus=response.data.code;
-                        if(that.loginStatus===200){
-                            that.applyUnread=response.data.data.number;
-                        }
-                        // console.log(response)
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+
                 this.$http.get("/userinfo/info")
                     .then(function (response) {
                         that.loginStatus=response.data.code;

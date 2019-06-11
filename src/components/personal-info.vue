@@ -133,10 +133,12 @@
             gotoDetail_setRead(aid,uid){
                 const that=this;
                 var url='comment/read/'+uid;
-                console.log(url);
+                // console.log(url);
                 this.$http.post(url)
                     .then(function (response) {
                         if(response.data.code===200){
+                            that.getOtherComment();
+                            that.$emit('showCommentUnreadNum',that.OtherCommentNum);
                             that.$router.push("/adoption/detail/"+aid);
                         }
                         else {
@@ -151,7 +153,7 @@
                 const that=this;
                 this.$http.get("/comment/unread")
                     .then(function (response) {
-                        console.log("comment:",response)
+                        // console.log("comment:",response);
                         that.OtherCommentNum=response.data.data.number;
                         that.OtherCommentList=response.data.data.list;
                         console.log(that.OtherCommentList);
@@ -164,10 +166,10 @@
                 const that=this;
                 this.$http.get("/apply/ownerunread")
                     .then(function (response) {
-                        console.log(response);
+                        // console.log(response);
                         that.OtherApplyNum=response.data.data.number;
                         that.OtherApplyList=response.data.data.list;
-                        console.log(that.OtherApplyList)
+                        // console.log(that.OtherApplyList)
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -180,6 +182,8 @@
                 this.$http.post(url)
                     .then(function (response) {
                         if(response.data.code===200){
+                            that.getOtherApply();
+                            that.$emit("showApplyUnreadNum",that.OtherApplyNum);
                             //that.$router.push("/adoption/detail/"+id);
                         }
                     })
@@ -264,7 +268,7 @@
                             that.$router.push("/login");
                         }
                         else {
-                            console.log(response.data.data);
+                            // console.log(response.data.data);
                             that.personalForm.name=response.data.data.username;
                             // that.personalForm.email=response.data.data.userMail;
                         }
