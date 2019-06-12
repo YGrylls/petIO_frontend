@@ -10,7 +10,7 @@
                 </el-form-item>
                 <el-form-item label="为您欲送养的宠物上传照片（至少一张）" prop="imgUrl">
                     <el-upload
-                            action="http://localhost:8081/api/upload"
+                            action="http://47.101.189.30:8081/api/upload"
                             accept="image/jpg,image/jpeg,image/png"
                             name="imgInput"
                             list-type="picture-card"
@@ -79,11 +79,23 @@
                 </el-form-item>
                 <div>
                     <small id="notification">※ 您的送养发布信息将保持15天，您可以在发布到期前三天开始对发布续期</small>
-                    <el-button type="primary" :loading="isLoading"  @click="submitClick">确认并提交送养发布信息</el-button>
+                    <el-button type="primary" :loading="isLoading"  @click="ensureClick">确认并提交送养发布信息</el-button>
                 </div>
 
             </el-form>
         </el-card>
+        <el-dialog title="注意" :visible.sync="confirmDialogVisible" width="700px">
+            <div id="candidateList" style="text-align: left;margin-bottom: 1em;padding: 1em">
+                <hr/>
+                <ul>
+                    <li>发布后他人能够申请您留下的联系方式并据此与您取得联系，请务必与有意领养方详细沟通确认后再进行交接工作，注意保护自身与宠物的权益与安全</li>
+                    <li>您的发布将保持十五天，以免您忘记于此撤销时收到不必要的打扰，若您届时欲延长此保持时间，可在到期前三天开始于个人中心手动延长</li>
+                    <li style="margin-bottom: 1.5em">强烈建议您与领养方签署领养民事合同以通过法律有效的方式保护自身和宠物 <span><a href="http://47.101.189.30:8081/template.pdf " target="templatePDF">《民事合同模板》</a></span></li>
+                </ul>
+                <hr/>
+            </div>
+            <el-button type="primary" :loading="isLoading"  @click="submitClick">已读并提交送养发布信息</el-button>
+        </el-dialog>
 
     </div>
 </template>
@@ -108,6 +120,7 @@
                 },
                 isLoading:false,
                 dialogVisible:false,
+                confirmDialogVisible:false,
                 dialogImageUrl:"",
                 rule:{
                     //验证
@@ -150,7 +163,13 @@
             }
         },
         methods:{
+            ensureClick() {
+                this.confirmDialogVisible=true;
+            },
+
+
             submitClick(){
+                this.confirmDialogVisible=false;
                 this.$refs.publishForm.validate((valid)=>{
                     if(valid){
                         this.submitPublish()
@@ -257,5 +276,9 @@
     .inlineFormItem{
         display: inline-block;
         margin-right: 1em;
+    }
+    li{
+        font-size: 1.2em;
+        margin-bottom: 0.5em;
     }
 </style>

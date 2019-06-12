@@ -41,7 +41,7 @@
                     <personal-item @refresh="refresh" v-on:listenToChildEvent="refresh"  v-for="(item,index) in publishmentList" :key="index" :publishment-data="item"></personal-item>
                 </el-tab-pane>
                 <el-tab-pane label="申请信息" name="first">
-                    <apply-item  @refresh="refresh" v-for="(item,index) in applyList" :key="index" :publishment-data="item" :chosen-list="chosenList"></apply-item>
+                    <apply-item  @refresh="refresh" v-for="(item,index) in applyList" :key="index" :publishment-data="item" :chosen-list="chosenList" :chosen-complete-list="chosenCompleteList"></apply-item>
                 </el-tab-pane>
                 <el-tab-pane label="修改密码" name="third">
                     <hr/>
@@ -103,6 +103,7 @@
                     newPassword:''
                 },
                 chosenList:[],
+                chosenCompleteList:[],
                 publishmentList:[],
                 applyList:[],
                 publishDate:new Date(),
@@ -209,12 +210,31 @@
                     })
                 })
             },
+            getChosenComplete(){
+                const that=this;
+                this.$http.get("/userinfo/AfterSecond").then((res)=>{
+                    if(res.data.code===200){
+                        that.chosenCompleteList=res.data.data;
+                    }else{
+                        that.$message({
+                            type:"warning",
+                            message:res.data.message
+                        })
+                    }
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
+            },
             refresh:function(){
                 this.fullscreenLoading=true;
                 this.showUser();
                 this.getPublishment();
                 this.getApply();
                 this.getChosen();
+                this.getChosenComplete();
                 this.getOtherComment();
                 this.getOtherApply();
             },

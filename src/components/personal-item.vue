@@ -17,7 +17,7 @@
         <el-dialog title="在该发布下申请过您联系方式的用户" :visible.sync="dialogVisible" width="620px">
             <div id="candidateList" style="text-align: left">
                 <h2>请完全确认并和领养方完成交接工作后再于此确认！</h2>
-                <h2 style="margin-bottom: 1.5em">强烈推荐与领养方签署领养民事合同 <span><a href="http://localhost:8081/template.pdf " target="templatePDF">《民事合同模板》</a></span></h2>
+                <h2 style="margin-bottom: 1.5em">强烈推荐与领养方签署领养民事合同 <span><a href="http://47.101.189.30:8081/template.pdf " target="templatePDF">《民事合同模板》</a></span></h2>
                 <h3 v-if="candidateList.length===0">暂时没有用户在此申请过您的联系方式哦</h3>
                 <div v-for="(item, index) in candidateList" :key="index">
                     <h3>{{item.username}} <span style="float: right">
@@ -33,7 +33,7 @@
         <el-dialog :visible.sync="userDialogVisible" width="30%">
             <user-info-box :user-box-info="userBoxInfo"></user-info-box>
         </el-dialog>
-        <el-dialog title="确认选择领养人" :visible.sync="confirmDialogVisible" width="40%">
+        <el-dialog title="确认选择领养人" :visible.sync="confirmDialogVisible" width="700px">
             <confirm-info></confirm-info>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="confirmDialogVisible = false">取 消</el-button>
@@ -282,7 +282,7 @@
 <style scoped>
     #personalContent{
         z-index: 100;
-        width:60%;
+        width:80%;
         position: relative;
         margin-bottom: 1em;
     }

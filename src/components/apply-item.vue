@@ -2,8 +2,9 @@
     <div>
         <el-card id="personalItem">
             <div id="personalContent" @click="gotoDetail">
-                <h4>{{publishmentData.aTitle}} <span><el-tag :type="tagType" id="state" >{{getState}}</el-tag></span></h4>
+                <h4>{{publishmentData.aTitle}} <span><el-tag :type="tagType" id="state" >{{getState}}</el-tag><el-tag v-if="ifChosenComplete" type="success" style="margin-left: 0.5em" >您已确认</el-tag></span></h4>
                 <el-tag v-if="ifChosen" type="success" style="font-size: 0.8em;margin-bottom: 0.5em" >等待您的确认</el-tag>
+
                 <el-row style="margin-top: 0.5em">
                     <el-col align="left"><i class="el-icon-time">刷新时间：{{publishmentData.publishDate}}</i></el-col>
                 </el-row>
@@ -15,7 +16,7 @@
             <el-button v-if="isCheckAvailable()" class="choice" size="mini"  icon="el-icon-check" @click="open2">确认领养并完成</el-button>
         </el-card>
         <apply-box ref="applyBox"></apply-box>
-        <el-dialog title="确认完成领养" :visible.sync="confirmDialogVisible" width="40%">
+        <el-dialog title="确认完成领养" :visible.sync="confirmDialogVisible" width="700px">
             <confirm-info></confirm-info>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="confirmDialogVisible = false">取 消</el-button>
@@ -32,7 +33,7 @@
     import confirmInfo from './comfirm-info';
     export default {
         name: "apply-item",
-        props:["publishmentData","chosenList"],
+        props:["publishmentData","chosenList","chosenCompleteList"],
         components:{
             applyBox,
             confirmInfo
@@ -45,6 +46,7 @@
                 getState:"开放申请",
                 tagType:"",
                 ifChosen:false,
+                ifChosenComplete:false,
                 confirmDialogVisible:false,
                 chosenUser:"送养方",
             }
@@ -52,12 +54,18 @@
         methods:{
             checkChosen(){
                 let id=this.publishmentData.aID;
+                for(let item of this.chosenCompleteList){
+                    if(id===item.aID){
+                        this.ifChosenComplete=true;
+                    }
+                }
                 for(let item of this.chosenList){
                     if(id===item.aID){
                         this.ifChosen=true;
                         return true;
                     }
                 }
+
                 return false;
             },
 
@@ -74,6 +82,7 @@
                         that.confirmDialogVisible=false;
                         // that.chosenUser="";
                         that.dialogVisible=false;
+                        that.ifChosen=false;
                         this.$emit("refresh");
 
                     }
@@ -87,10 +96,11 @@
             isCheckAvailable(){
 
                 if(this.publishmentData.aState===6 || this.publishmentData.aState===5){
+                    let temp=this.checkChosen();
                     if(this.publishmentData.aState===6){
                         this.getState="进入确认流程";
                         this.tagType="warning";
-                        return this.checkChosen();
+                        return temp;
                     }else {
                         this.getState="已完成";
                         this.tagType="success";
@@ -158,7 +168,7 @@
     #personalContent{
         z-index: 100;
         position: relative;
-        width:60%;
+        width:80%;
         margin-bottom: 1em;
     }
     #personalItem{

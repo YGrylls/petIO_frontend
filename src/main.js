@@ -17,7 +17,7 @@ Vue.use(Viewer, {
     }
 });
 
-axios.defaults.baseURL="http://localhost:8081/api/";
+axios.defaults.baseURL="http://47.101.189.30:8081/api/";
 axios.defaults.withCredentials=true;
 Vue.prototype.$http=axios;
 
@@ -25,7 +25,7 @@ var proxy = require('http-proxy-middleware');
 Vue.use(
     '/api',
     proxy({
-        target: 'http://localhost:8081',
+        target: 'http://47.101.189.30:8081',
         changeOrigin: true,
         pathRewrite: {
             '^/api': ''
