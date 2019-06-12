@@ -2,7 +2,7 @@
     <div>
         <el-card id="personalItem">
             <div id="personalContent" @click="gotoDetail">
-                <h4>{{publishmentData.aTitle}} <span><el-tag :type="tagType" id="state" >{{getState}}</el-tag><el-tag v-if="ifChosenComplete" type="success" style="margin-left: 0.5em" >您已确认</el-tag></span></h4>
+                <h4 style="margin-bottom: 0.2em">{{publishmentData.aTitle}} <span><el-tag :type="tagType" id="state" >{{getState}}</el-tag><el-tag v-if="ifChosenComplete" type="success" style="margin-left: 0.5em" >您已确认</el-tag></span></h4>
                 <el-tag v-if="ifChosen" type="success" style="font-size: 0.8em;margin-bottom: 0.5em" >等待您的确认</el-tag>
 
                 <el-row style="margin-top: 0.5em">
@@ -57,8 +57,10 @@
                 for(let item of this.chosenCompleteList){
                     if(id===item.aID){
                         this.ifChosenComplete=true;
+                        this.ifChosen=false;
                     }
                 }
+
                 for(let item of this.chosenList){
                     if(id===item.aID){
                         this.ifChosen=true;
@@ -82,7 +84,9 @@
                         that.confirmDialogVisible=false;
                         // that.chosenUser="";
                         that.dialogVisible=false;
+                        console.log(that.ifChosen);
                         that.ifChosen=false;
+                        console.log(that.ifChosen);
                         this.$emit("refresh");
 
                     }
