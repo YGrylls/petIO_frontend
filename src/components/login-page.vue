@@ -16,6 +16,7 @@
                             <el-form-item prop="password">
                                 <el-input prefix-icon="el-icon-caret-right" show-password :maxlength="16" v-model="loginForm.password" placeholder="请输入密码"></el-input>
                             </el-form-item>
+                            <a href="#" style="text-align: left" @click="forgetVisible=true"><small>忘记密码？</small></a>
                             <el-button-group id="buttonGroup">
                                 <el-button :loading="isLoading" class="buttonLg" type="primary" @click="submitLoginForm"><i class="el-icon-check"></i>  登陆</el-button>
                                 <el-button plain class="buttonLg" @click="startSignup">注册  <i class="el-icon-edit"></i></el-button>
@@ -27,6 +28,21 @@
             </el-row>
         </div>
         <signup-box ref="signUpBox"></signup-box>
+        <el-dialog title="忘记密码" :close-on-click-modal="false" :visible.sync="forgetVisible" width="800px">
+            <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-position="top" style="text-align: left">
+                <el-form-item label="注册时使用的邮箱" prop="emailAddress">
+                    <el-input v-model="modifyForm.emailAddress"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱验证码" prop="verifyCode">
+                    <el-input v-model="modifyForm.verifyCode" style="display: inline-block; width: 60%"></el-input>
+                    <el-button type="primary" style="display: inline-block;float:right; width: 35%" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
+                </el-form-item>
+                <el-form-item label="输入新的密码" prop="newPassword">
+                    <el-input v-model="modifyForm.newPassword" show-password></el-input>
+                </el-form-item>
+                <el-button type="primary" style="margin: 0.5em 0 0.5em 0" @click="modifyFormSubmit">确认修改</el-button>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -37,14 +53,26 @@
         name: "login-page",
         components: {SignupBox, LoginSlides},
         data(){
+            var validateEmail=(rule,value,callback)=>{
+
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(value)){
+                    callback(new Error('请输入正确的邮箱地址格式'))
+                }else{
+                    callback();
+                }
+            };
             return{
+                forgetVisible:false,
                 isLoading:false,
+                emailLoading:false,
                 layout:{
                     xs:{span:16, offset:3},
                     sm:{span:14, offset:4},
                     md:{span:9, offset:6},
                     lg:{span:7, offset:12},
                 },
+                emailBtnTxt:"点击发送验证码",
                 loginForm:{
                     username:"",
                     password:""
@@ -54,6 +82,26 @@
                     type:"success",
                     title:"submitted"
 
+                },
+                modifyForm:{
+                    emailAddress:'',
+                    verifyCode:'',
+                    newPassword:''
+                },
+                modifyrule:{
+                    newPassword:[
+                        {required:true,message:"请输入新密码",trigger:"blur"},
+                        {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
+                    ],
+                    verifyCode:[
+                        {required:true,message:"请输入验证码",trigger:"blur"},
+                        {min:6,max:32,trigger:"blur"},
+                    ],
+                    emailAddress:[
+                        {required:true,message:"请输入验证码",trigger:"blur"},
+                        {min:6,max:36,trigger:"blur"},
+                        {validator:validateEmail,trigger:"blur"}
+                    ]
                 },
                 rule:{
                     username:[
@@ -69,6 +117,72 @@
             }
         },
         methods:{
+            modifyFormSubmit:function () {
+                this.$refs["modifyForm"].validate((valid) => {
+                    if(valid){
+                        this.modify();
+                    }
+                    else {
+                        return false;
+                    }
+                })
+            },
+            modify:function(){
+                const that=this;
+                this.$http.post("/userinfo/changePassword",that.modifyForm)
+                    .then(function (response) {
+                        if(response.data.code!==200){
+                            that.$message({
+                                type:"warning",
+                                message:response.data.message
+                            })
+                        }
+                        else {
+                            alert("修改成功！");
+                            that.modifyForm.newPassword="";
+                            that.modifyForm.emailAddress="";
+                            that.modifyForm.verifyCode="";
+                            that.forgetVisible=false;
+                        }
+                    })
+                    .catch(function (error) {
+                        if(error.response){
+                            alert(error.response.message)
+                        }
+                        else {
+                            alert(error.message)
+                        }
+                    });
+            },
+            getValidationCode:function(){
+                let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if(!reg.test(this.modifyForm.emailAddress)){
+                    console.log(this.modifyForm);
+                    this.$message("请先正确填写邮箱");
+                    return;
+                }
+                const that=this;
+                this.$http.post("mailcodeonchangepwd",
+                    that.modifyForm.emailAddress,{
+                        headers: {
+                            'Content-Type':'text/plain'
+                        }
+                    }).then((res)=>{
+                    if(res.data.code===200){
+                        that.emailBtnTxt="邮件验证码已发送";
+                        that.emailLoading=true;
+                    }else{
+                        that.$message(res.data.message);
+                    }
+
+                }).catch(()=>{
+                    that.$message({
+                        type:"warning",
+                        message:"Network Error"
+                    })
+                })
+
+            },
             submitLoginForm:function () {
                 this.$refs["lgForm"].validate((valid) => {
                     if(valid){
@@ -164,6 +278,7 @@
         height:100%;
     }
     #form{
+        text-align: left;
         margin-top:1.5em;
         margin-left:0.4em;
         margin-right:0.4em;

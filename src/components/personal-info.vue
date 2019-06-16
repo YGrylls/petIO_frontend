@@ -4,6 +4,9 @@
             <h1>{{personalForm.name}}</h1>
             <hr>
             <p class="tag"><span>昵称：</span><strong>{{personalForm.name}}</strong></p>
+            <div style="text-align: left">
+                <el-button type="danger" style="margin-bottom: 1em;" @click="logout">返回登录</el-button>
+            </div>
             <el-collapse v-model="activecollapse">
                 <el-collapse-item title="评论信息" name="1">
                     <div v-for="item in OtherCommentList" :key="item.key">
@@ -127,6 +130,9 @@
             }
         },
         methods:{
+            logout(){
+                this.$router.push("/login");
+            },
             gotoDetail(id){
                 this.$router.push("/adoption/detail/"+id);
                 // console.log(id);
