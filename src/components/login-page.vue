@@ -30,15 +30,15 @@
         <signup-box ref="signUpBox"></signup-box>
         <el-dialog title="忘记密码" :close-on-click-modal="false" :visible.sync="forgetVisible" width="800px">
             <el-form ref="modifyForm" :model="modifyForm" :rules="modifyrule" label-position="top" style="text-align: left">
-                <el-form-item label="注册时使用的邮箱" prop="emailAddress">
-                    <el-input v-model="modifyForm.emailAddress"></el-input>
+                <el-form-item label="注册时使用的邮箱" prop="mailAddress">
+                    <el-input v-model="modifyForm.mailAddress"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱验证码" prop="verifyCode">
                     <el-input v-model="modifyForm.verifyCode" style="display: inline-block; width: 60%"></el-input>
                     <el-button type="primary" style="display: inline-block;float:right; width: 35%" @click="getValidationCode" :loading="emailLoading">{{emailBtnTxt}}</el-button>
                 </el-form-item>
-                <el-form-item label="输入新的密码" prop="newPassword">
-                    <el-input v-model="modifyForm.newPassword" show-password></el-input>
+                <el-form-item label="输入新的密码" prop="password">
+                    <el-input v-model="modifyForm.password" show-password></el-input>
                 </el-form-item>
                 <el-button type="primary" style="margin: 0.5em 0 0.5em 0" @click="modifyFormSubmit">确认修改</el-button>
             </el-form>
@@ -84,12 +84,12 @@
 
                 },
                 modifyForm:{
-                    emailAddress:'',
+                    mailAddress:'',
                     verifyCode:'',
-                    newPassword:''
+                    password:''
                 },
                 modifyrule:{
-                    newPassword:[
+                    password:[
                         {required:true,message:"请输入新密码",trigger:"blur"},
                         {min:8,max:16,message:"字符长度在8-16",trigger:"blur"},
                     ],
@@ -97,7 +97,7 @@
                         {required:true,message:"请输入验证码",trigger:"blur"},
                         {min:6,max:32,trigger:"blur"},
                     ],
-                    emailAddress:[
+                    mailAddress:[
                         {required:true,message:"请输入验证码",trigger:"blur"},
                         {min:6,max:36,trigger:"blur"},
                         {validator:validateEmail,trigger:"blur"}
@@ -139,8 +139,8 @@
                         }
                         else {
                             alert("修改成功！");
-                            that.modifyForm.newPassword="";
-                            that.modifyForm.emailAddress="";
+                            that.modifyForm.password="";
+                            that.modifyForm.mailAddress="";
                             that.modifyForm.verifyCode="";
                             that.forgetVisible=false;
                         }
@@ -156,14 +156,14 @@
             },
             getValidationCode:function(){
                 let reg=/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-                if(!reg.test(this.modifyForm.emailAddress)){
+                if(!reg.test(this.modifyForm.mailAddress)){
                     console.log(this.modifyForm);
                     this.$message("请先正确填写邮箱");
                     return;
                 }
                 const that=this;
                 this.$http.post("mailcodeonchangepwd",
-                    that.modifyForm.emailAddress,{
+                    that.modifyForm.mailAddress,{
                         headers: {
                             'Content-Type':'text/plain'
                         }
